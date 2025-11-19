@@ -12,6 +12,7 @@ import PublicCard from "./pages/PublicCard";
 import Dashboard from "./pages/Dashboard";
 import IDCards from "./pages/IDCards";
 import YoutubeIDCardCreator from "./pages/YoutubeIDCardCreator";
+import CustomDomainSettings from "./pages/CustomDomainSettings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/dashboard/id-cards" element={<IDCards />} />
             <Route path="/create/youtube-id-card" element={<YoutubeIDCardCreator />} />
+            <Route path="/settings/custom-domain/:cardId" element={<CustomDomainSettings />} />
             {/* Public card routes - username based like wcard.io */}
             <Route path="/:username" element={<PublicCard />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

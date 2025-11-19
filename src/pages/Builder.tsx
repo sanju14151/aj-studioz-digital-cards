@@ -46,6 +46,7 @@ const Builder = () => {
     role: "Creative Director",
     bio: "Passionate about design and innovation. Creating beautiful experiences that connect people.",
     company: "AJ STUDIOZ",
+    industry: "Technology",
     email: "john@ajstudioz.com",
     phone: "+1 234 567 8900",
     location: "New York, USA",
@@ -96,6 +97,7 @@ const Builder = () => {
         phone: cardData.phone,
         website: cardData.website,
         location: cardData.location,
+        industry: cardData.industry,
       };
 
       await createCard(user.id, cardDataForAPI, socialLinksArray);
@@ -328,7 +330,7 @@ const Builder = () => {
                     </div>
 
                     <div>
-                      <Label htmlFor="company" className="text-base font-semibold mb-3 block">Company</Label>
+                      <Label htmlFor="company" className="text-base font-semibold mb-3 block">Company Name</Label>
                       <div className="relative">
                         <Building className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                         <Input
@@ -339,6 +341,37 @@ const Builder = () => {
                           placeholder="Company name"
                         />
                       </div>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="industry" className="text-base font-semibold mb-3 block">Industry</Label>
+                      <select
+                        id="industry"
+                        value={cardData.industry}
+                        onChange={(e) => setCardData({ ...cardData, industry: e.target.value })}
+                        className="h-12 w-full px-4 bg-background/50 border border-border/50 focus:border-primary rounded-xl"
+                      >
+                        <option value="Technology">💻 Technology</option>
+                        <option value="Healthcare">🏥 Healthcare</option>
+                        <option value="Finance">💰 Finance</option>
+                        <option value="Education">📚 Education</option>
+                        <option value="Marketing">📢 Marketing</option>
+                        <option value="Real Estate">🏠 Real Estate</option>
+                        <option value="Retail">🛍️ Retail</option>
+                        <option value="Hospitality">🏨 Hospitality</option>
+                        <option value="Entertainment">🎬 Entertainment</option>
+                        <option value="Food & Beverage">🍽️ Food & Beverage</option>
+                        <option value="Consulting">💼 Consulting</option>
+                        <option value="Creative">🎨 Creative</option>
+                        <option value="Legal">⚖️ Legal</option>
+                        <option value="Construction">🏗️ Construction</option>
+                        <option value="Manufacturing">🏭 Manufacturing</option>
+                        <option value="Transportation">🚗 Transportation</option>
+                        <option value="Telecommunications">📱 Telecommunications</option>
+                        <option value="Media">📺 Media</option>
+                        <option value="Non-Profit">❤️ Non-Profit</option>
+                        <option value="Other">🔧 Other</option>
+                      </select>
                     </div>
 
                     <div>

@@ -21,7 +21,8 @@ import {
   MoreVertical,
   Trash2,
   Copy,
-  ExternalLink
+  ExternalLink,
+  Globe
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
@@ -320,6 +321,10 @@ const Dashboard = () => {
                         <DropdownMenuItem onClick={() => navigate(`/analytics/${card.id}`)}>
                           <TrendingUp className="w-4 h-4 mr-2" />
                           Analytics
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => navigate(`/settings/custom-domain/${card.id}`)}>
+                          <Globe className="w-4 h-4 mr-2" />
+                          Custom Domain
                         </DropdownMenuItem>
                         <DropdownMenuItem 
                           onClick={() => handleDeleteCard(card.id)}

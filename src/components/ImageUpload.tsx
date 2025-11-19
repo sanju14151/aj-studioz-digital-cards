@@ -10,7 +10,7 @@ import { Card } from '@/components/ui/card';
 import { Upload, X, Camera, Image as ImageIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
-import { handleImageUpload, createAvatarFromInitials } from '@/lib/image-upload';
+import { handleImageUpload, createAvatarFromInitials } from '@/lib/vercel-blob-upload';
 
 interface ImageUploadProps {
   label: string;

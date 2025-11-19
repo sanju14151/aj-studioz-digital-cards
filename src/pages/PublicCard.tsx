@@ -31,6 +31,7 @@ interface CardData {
   fullName: string;
   role: string;
   company: string;
+  industry?: string;
   bio: string;
   email: string;
   phone: string;
@@ -95,6 +96,7 @@ const PublicCard = () => {
           fullName: card.full_name,
           role: card.role || '',
           company: card.company || '',
+          industry: card.industry || undefined,
           bio: card.bio || '',
           email: card.email || '',
           phone: card.phone || '',
@@ -281,6 +283,11 @@ const PublicCard = () => {
             </p>
             {cardData.company && (
               <p className="text-muted-foreground">{cardData.company}</p>
+            )}
+            {cardData.industry && (
+              <span className="inline-block px-3 py-1 text-sm rounded-full bg-primary/10 text-primary font-medium">
+                {cardData.industry}
+              </span>
             )}
           </div>
 
