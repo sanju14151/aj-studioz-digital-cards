@@ -91,12 +91,12 @@ const Builder = () => {
       // Create or update card
       const cardDataForAPI = {
         username,
-        full_name: cardData.name,
+        fullName: cardData.name,
         role: cardData.role,
         company: cardData.company,
         bio: cardData.bio,
-        profile_image: cardData.profileImage,
-        cover_image: cardData.coverImage,
+        profileImage: cardData.profileImage,
+        coverImage: cardData.coverImage,
         email: cardData.email,
         phone: cardData.phone,
         website: cardData.website,

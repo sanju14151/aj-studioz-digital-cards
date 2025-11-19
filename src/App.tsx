@@ -14,6 +14,7 @@ import IDCards from "./pages/IDCards";
 import YoutubeIDCardCreator from "./pages/YoutubeIDCardCreator";
 import CustomDomainSettings from "./pages/CustomDomainSettings";
 import NotFound from "./pages/NotFound";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -26,13 +27,15 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/builder" element={<Builder />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/preview" element={<Preview />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/dashboard/id-cards" element={<IDCards />} />
-            <Route path="/create/youtube-id-card" element={<YoutubeIDCardCreator />} />
-            <Route path="/settings/custom-domain/:cardId" element={<CustomDomainSettings />} />
+            
+            {/* Protected Routes - Require Authentication */}
+            <Route path="/builder" element={<ProtectedRoute><Builder /></ProtectedRoute>} />
+            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/dashboard/id-cards" element={<ProtectedRoute><IDCards /></ProtectedRoute>} />
+            <Route path="/create/youtube-id-card" element={<ProtectedRoute><YoutubeIDCardCreator /></ProtectedRoute>} />
+            <Route path="/settings/custom-domain/:cardId" element={<ProtectedRoute><CustomDomainSettings /></ProtectedRoute>} />
             {/* Public card routes - username based like wcard.io */}
             <Route path="/:username" element={<PublicCard />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
