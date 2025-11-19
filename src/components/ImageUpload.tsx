@@ -40,26 +40,20 @@ export const ImageUploadComponent = ({
     setUploading(true);
 
     try {
-      const result = await handleImageUpload(file, {
-        maxSize: type === 'banner' ? 10 : 5,
-        quality: 0.9
+      const uploadType = type === 'banner' ? 'cover' : 'profile';
+      const imageUrl = await handleImageUpload(file, uploadType, (progress) => {
+        console.log(`Upload progress: ${progress}%`);
       });
 
-      if (result.success && result.dataUrl) {
-        setPreview(result.dataUrl);
-        onImageChange(result.dataUrl);
-        toast.success('Image uploaded successfully!', {
-          description: `Your ${type} image has been updated`
-        });
-      } else {
-        toast.error('Upload failed', {
-          description: result.error || 'Failed to upload image'
-        });
-      }
+      setPreview(imageUrl);
+      onImageChange(imageUrl);
+      toast.success('Image uploaded successfully!', {
+        description: `Your ${type} image has been updated`
+      });
     } catch (error) {
       console.error('Upload error:', error);
       toast.error('Upload failed', {
-        description: 'An error occurred while uploading'
+        description: error instanceof Error ? error.message : 'An error occurred while uploading'
       });
     } finally {
       setUploading(false);
@@ -159,14 +153,14 @@ export const ImageUploadComponent = ({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={handleClick}
-              className="cursor-pointer p-12 flex flex-col items-center justify-center text-center hover:bg-secondary/50 transition-colors"
-              style={{ aspectRatio }}
+              className="cursor-pointer p-6 flex flex-col items-center justify-center text-center hover:bg-secondary/50 transition-colors"
+              style={{ aspectRatio: type === 'banner' ? '16/9' : '1/1', minHeight: type === 'banner' ? '150px' : '120px' }}
             >
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-2">
                 {type === 'banner' ? (
-                  <ImageIcon className="w-8 h-8 text-primary" />
+                  <ImageIcon className="w-6 h-6 text-primary" />
                 ) : (
-                  <Upload className="w-8 h-8 text-primary" />
+                  <Upload className="w-6 h-6 text-primary" />
                 )}
               </div>
               
@@ -175,12 +169,9 @@ export const ImageUploadComponent = ({
               </p>
               <p className="text-xs text-muted-foreground">
                 {type === 'banner' 
-                  ? 'Recommended: 1200x675px (16:9) • Max 10MB'
-                  : 'Recommended: 400x400px • Max 5MB'
+                  ? '1200x675px • Max 10MB'
+                  : '400x400px • Max 5MB'
                 }
-              </p>
-              <p className="text-xs text-muted-foreground mt-2">
-                PNG, JPG, WEBP or GIF
               </p>
             </motion.div>
           )}
