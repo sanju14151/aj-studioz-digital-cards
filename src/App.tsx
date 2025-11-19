@@ -13,6 +13,7 @@ import Dashboard from "./pages/Dashboard";
 import IDCards from "./pages/IDCards";
 import YoutubeIDCardCreator from "./pages/YoutubeIDCardCreator";
 import CustomDomainSettings from "./pages/CustomDomainSettings";
+import Templates from "./pages/Templates";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -32,6 +33,7 @@ const App = () => (
             
             {/* Protected Routes - Require Authentication */}
             <Route path="/builder" element={<ProtectedRoute><Builder /></ProtectedRoute>} />
+            <Route path="/templates" element={<ProtectedRoute><Templates /></ProtectedRoute>} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/dashboard/id-cards" element={<ProtectedRoute><IDCards /></ProtectedRoute>} />
             <Route path="/create/youtube-id-card" element={<ProtectedRoute><YoutubeIDCardCreator /></ProtectedRoute>} />

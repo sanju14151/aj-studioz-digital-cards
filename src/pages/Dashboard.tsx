@@ -168,6 +168,10 @@ const Dashboard = () => {
               <QrCode className="w-4 h-4 mr-2" />
               ID Cards
             </Button>
+            <Button variant="outline" onClick={() => navigate('/templates')}>
+              <Eye className="w-4 h-4 mr-2" />
+              Templates
+            </Button>
             <Button onClick={() => navigate('/builder')}>
               <Plus className="w-4 h-4 mr-2" />
               New Card
@@ -190,10 +194,16 @@ const Dashboard = () => {
             <p className="text-muted-foreground mb-6">
               Create your first digital business card to get started
             </p>
-            <Button size="lg" onClick={() => navigate('/builder')}>
-              <Plus className="w-5 h-5 mr-2" />
-              Create Your First Card
-            </Button>
+            <div className="flex gap-4 justify-center">
+              <Button size="lg" variant="outline" onClick={() => navigate('/templates')}>
+                <Eye className="w-5 h-5 mr-2" />
+                Browse Templates
+              </Button>
+              <Button size="lg" onClick={() => navigate('/builder')}>
+                <Plus className="w-5 h-5 mr-2" />
+                Create From Scratch
+              </Button>
+            </div>
           </motion.div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
