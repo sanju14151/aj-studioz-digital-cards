@@ -32,7 +32,6 @@ import {
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
-import { MotionCard, MotionButton, MotionIcon, MotionAvatar } from "@/components/motion";
 import QRCodeCustomizer from "@/components/QRCodeCustomizer";
 import ImageUpload from "@/components/ImageUpload";
 import MobilePreview from "@/components/MobilePreview";
@@ -64,6 +63,11 @@ const Builder = () => {
       youtube: "",
     },
     youtubeChannel: "",
+    qrCode: "",
+    theme: {
+      name: "Gold",
+      colors: ["#D4AF37", "#000000"]
+    },
   });
 
   const handleSave = async () => {
@@ -190,37 +194,37 @@ const Builder = () => {
           </motion.div>
           
           <div className="flex items-center gap-3">
-            <MotionButton 
+            <Button 
               variant="outline" 
               onClick={handlePreview}
               size="sm"
             >
               <Eye className="w-4 h-4 mr-2" />
               Preview
-            </MotionButton>
-            <MotionButton 
+            </Button>
+            <Button 
               variant="outline" 
               onClick={handleSaveContact}
               size="sm"
             >
               <Download className="w-4 h-4 mr-2" />
               Save Contact
-            </MotionButton>
-            <MotionButton 
+            </Button>
+            <Button 
               variant="outline" 
               onClick={handleShare}
               size="sm"
             >
               <Share2 className="w-4 h-4 mr-2" />
               Share
-            </MotionButton>
-            <MotionButton 
+            </Button>
+            <Button 
               variant="gold"
               onClick={handleSave}
             >
               <Save className="w-4 h-4 mr-2" />
               Save Card
-            </MotionButton>
+            </Button>
           </div>
         </div>
       </motion.header>
@@ -510,7 +514,10 @@ const Builder = () => {
                         Customize your QR code style, colors, and appearance
                       </p>
                     </div>
-                    <QRCodeCustomizer username="johndoe" />
+                    <QRCodeCustomizer 
+                      username={cardData.name.toLowerCase().replace(/\s+/g, '')} 
+                      onQRCodeGenerated={(qrCode) => setCardData(prev => ({ ...prev, qrCode }))}
+                    />
                   </div>
                 </Card>
               </TabsContent>
@@ -532,7 +539,15 @@ const Builder = () => {
                             key={i}
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            className="relative h-20 rounded-xl border-2 border-border/50 hover:border-primary/50 transition-all overflow-hidden group"
+                            onClick={() => {
+                              setCardData(prev => ({ ...prev, theme }));
+                              toast.success(`${theme.name} theme applied!`);
+                            }}
+                            className={`relative h-20 rounded-xl border-2 ${
+                              cardData.theme.name === theme.name 
+                                ? 'border-primary shadow-lg shadow-primary/20' 
+                                : 'border-border/50'
+                            } hover:border-primary/50 transition-all overflow-hidden group`}
                             style={{
                               background: `linear-gradient(135deg, ${theme.colors[0]}, ${theme.colors[1]})`
                             }}
@@ -540,6 +555,11 @@ const Builder = () => {
                             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                               <span className="text-white font-semibold text-sm">{theme.name}</span>
                             </div>
+                            {cardData.theme.name === theme.name && (
+                              <div className="absolute top-2 right-2 bg-primary text-primary-foreground rounded-full p-1">
+                                <Sparkles className="w-3 h-3" />
+                              </div>
+                            )}
                           </motion.button>
                         ))}
                       </div>

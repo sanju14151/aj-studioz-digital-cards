@@ -33,8 +33,8 @@ interface CardData {
   profileImage?: string;
   coverImage?: string;
   theme?: {
-    primaryColor: string;
-    backgroundColor: string;
+    name: string;
+    colors: string[];
   };
   socialLinks?: {
     instagram?: string;
@@ -51,8 +51,8 @@ interface MobilePreviewProps {
 }
 
 export const MobilePreview = ({ cardData, username = 'preview' }: MobilePreviewProps) => {
-  const primaryColor = cardData.theme?.primaryColor || '#D4AF37';
-  const bgColor = cardData.theme?.backgroundColor || '#000000';
+  const primaryColor = cardData.theme?.colors?.[0] || '#D4AF37';
+  const bgColor = cardData.theme?.colors?.[1] || '#000000';
 
   const socialIcons = [
     { icon: Instagram, link: cardData.socialLinks?.instagram, label: 'Instagram' },

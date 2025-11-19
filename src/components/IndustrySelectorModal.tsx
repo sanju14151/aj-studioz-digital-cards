@@ -3,7 +3,7 @@
  */
 
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Search, Check } from 'lucide-react';
@@ -70,9 +70,9 @@ export default function IndustrySelectorModal({
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-hidden p-0">
         <DialogHeader className="p-6 pb-4 border-b">
           <DialogTitle className="text-2xl font-bold">Select Your Industry</DialogTitle>
-          <p className="text-sm text-muted-foreground mt-1">
+          <DialogDescription className="text-sm text-muted-foreground mt-1">
             Choose the industry that best describes your business
-          </p>
+          </DialogDescription>
         </DialogHeader>
 
         <div className="px-6 py-4">
