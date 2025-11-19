@@ -22,6 +22,9 @@ import VirtualBackground from "./pages/VirtualBackground";
 import EmailSignature from "./pages/EmailSignature";
 import Analytics from "./pages/Analytics";
 import Integrations from "./pages/Integrations";
+import Features from "./pages/Features";
+import Pricing from "./pages/Pricing";
+import Demo from "./pages/Demo";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -38,6 +41,10 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/preview" element={<Preview />} />
+            <Route path="/features" element={<Features />} />
+            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/demo" element={<Demo />} />
+            <Route path="/nfc-cards" element={<NFCCards />} />
             
             {/* Protected Routes - Require Authentication */}
             <Route path="/builder" element={<ProtectedRoute><Builder /></ProtectedRoute>} />
