@@ -58,24 +58,27 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const login = async (email: string, password: string) => {
     setLoading(true);
     try {
-      // In production, this would call your API
-      // For now, we'll simulate authentication
+      // Import API client function
+      const { authenticateUser } = await import('@/lib/api-client');
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Authenticate with Neon PostgreSQL database
+      const userProfile = await authenticateUser(email, password);
       
-      // For demo purposes, accept any email/password
-      // In production, validate against database
-      const mockUser: User = {
-        id: `user_${Date.now()}`,
-        email,
-        fullName: email.split('@')[0],
-        createdAt: new Date().toISOString(),
+      if (!userProfile) {
+        throw new Error('Invalid email or password');
+      }
+      
+      const authenticatedUser: User = {
+        id: userProfile.id,
+        email: userProfile.email,
+        fullName: userProfile.full_name,
+        avatarUrl: userProfile.avatar_url,
+        createdAt: userProfile.created_at,
       };
       
-      setUser(mockUser);
-      localStorage.setItem('user', JSON.stringify(mockUser));
-      localStorage.setItem('authToken', `token_${Date.now()}`);
+      setUser(authenticatedUser);
+      localStorage.setItem('user', JSON.stringify(authenticatedUser));
+      localStorage.setItem('authToken', `token_${userProfile.id}_${Date.now()}`);
       
     } catch (error) {
       console.error('Login error:', error);
@@ -88,27 +91,38 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const signup = async (email: string, password: string, fullName: string) => {
     setLoading(true);
     try {
-      // In production, this would call your API to create user
-      // For now, we'll simulate account creation
-      
       // Validate input
       if (!email || !password || password.length < 6) {
         throw new Error('Invalid input. Password must be at least 6 characters.');
       }
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      if (!fullName || fullName.trim().length < 2) {
+        throw new Error('Please enter your full name.');
+      }
+      
+      // Import API client functions
+      const { createUser, getUserByEmail } = await import('@/lib/api-client');
+      
+      // Check if user already exists
+      const existingUser = await getUserByEmail(email);
+      if (existingUser) {
+        throw new Error('Email already registered. Please login instead.');
+      }
+      
+      // Create new user in Neon PostgreSQL database
+      const newUserProfile = await createUser(email, fullName, password);
       
       const newUser: User = {
-        id: `user_${Date.now()}`,
-        email,
-        fullName,
-        createdAt: new Date().toISOString(),
+        id: newUserProfile.id,
+        email: newUserProfile.email,
+        fullName: newUserProfile.full_name,
+        avatarUrl: newUserProfile.avatar_url,
+        createdAt: newUserProfile.created_at,
       };
       
       setUser(newUser);
       localStorage.setItem('user', JSON.stringify(newUser));
-      localStorage.setItem('authToken', `token_${Date.now()}`);
+      localStorage.setItem('authToken', `token_${newUser.id}_${Date.now()}`);
       
     } catch (error) {
       console.error('Signup error:', error);

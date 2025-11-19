@@ -33,6 +33,8 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { MotionCard, MotionButton, MotionIcon, MotionAvatar } from "@/components/motion";
 import QRCodeCustomizer from "@/components/QRCodeCustomizer";
+import ImageUpload from "@/components/ImageUpload";
+import MobilePreview from "@/components/MobilePreview";
 import { downloadVCard, shareVCard, shareCardLink, VCardData } from "@/lib/vcard-generator";
 
 const Builder = () => {
@@ -46,6 +48,15 @@ const Builder = () => {
     phone: "+1 234 567 8900",
     location: "New York, USA",
     website: "ajstudioz.com",
+    coverImage: "",
+    profileImage: "",
+    socialLinks: {
+      instagram: "",
+      linkedin: "",
+      twitter: "",
+      facebook: "",
+      youtube: "",
+    }
   });
 
   const handleSave = () => {
@@ -223,20 +234,26 @@ const Builder = () => {
               <TabsContent value="profile" className="space-y-6 mt-8">
                 <Card className="p-8 bg-gradient-to-br from-card to-secondary/30 border-2 border-border/50 rounded-2xl backdrop-blur-sm">
                   <div className="space-y-6">
+                    {/* Cover Image Upload */}
+                    <div>
+                      <Label className="text-base font-semibold mb-3 block">Cover Image</Label>
+                      <ImageUpload
+                        type="banner"
+                        currentImage={cardData.coverImage}
+                        userName={cardData.name}
+                        onImageChange={(imageUrl) => setCardData({ ...cardData, coverImage: imageUrl })}
+                      />
+                    </div>
+
                     {/* Profile Image Upload */}
                     <div>
                       <Label className="text-base font-semibold mb-3 block">Profile Image</Label>
-                      <div className="flex items-center gap-6">
-                        <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center ring-4 ring-primary/20">
-                          <span className="text-2xl font-bold text-primary-foreground">
-                            {cardData.name.split(' ').map(n => n[0]).join('').toUpperCase()}
-                          </span>
-                        </div>
-                        <Button variant="outline" className="border-primary/30 hover:bg-primary/5">
-                          <Upload className="w-4 h-4 mr-2" />
-                          Upload Image
-                        </Button>
-                      </div>
+                      <ImageUpload
+                        type="profile"
+                        currentImage={cardData.profileImage}
+                        userName={cardData.name}
+                        onImageChange={(imageUrl) => setCardData({ ...cardData, profileImage: imageUrl })}
+                      />
                     </div>
 
                     <div>
@@ -359,17 +376,22 @@ const Builder = () => {
                 <Card className="p-8 bg-gradient-to-br from-card to-secondary/30 border-2 border-border/50 rounded-2xl backdrop-blur-sm">
                   <div className="space-y-6">
                     {[
-                      { icon: Instagram, label: "Instagram", placeholder: "instagram.com/username" },
-                      { icon: Linkedin, label: "LinkedIn", placeholder: "linkedin.com/in/username" },
-                      { icon: Twitter, label: "Twitter", placeholder: "twitter.com/username" },
-                      { icon: Facebook, label: "Facebook", placeholder: "facebook.com/username" },
-                      { icon: Youtube, label: "YouTube", placeholder: "youtube.com/@username" },
+                      { icon: Instagram, label: "Instagram", placeholder: "instagram.com/username", key: "instagram" },
+                      { icon: Linkedin, label: "LinkedIn", placeholder: "linkedin.com/in/username", key: "linkedin" },
+                      { icon: Twitter, label: "Twitter", placeholder: "twitter.com/username", key: "twitter" },
+                      { icon: Facebook, label: "Facebook", placeholder: "facebook.com/username", key: "facebook" },
+                      { icon: Youtube, label: "YouTube", placeholder: "youtube.com/@username", key: "youtube" },
                     ].map((social, i) => (
                       <div key={i}>
                         <Label className="text-base font-semibold mb-3 block">{social.label}</Label>
                         <div className="relative">
                           <social.icon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                           <Input
+                            value={cardData.socialLinks[social.key as keyof typeof cardData.socialLinks]}
+                            onChange={(e) => setCardData({
+                              ...cardData,
+                              socialLinks: { ...cardData.socialLinks, [social.key]: e.target.value }
+                            })}
                             className="h-12 pl-12 bg-background/50 border-border/50 focus:border-primary rounded-xl"
                             placeholder={social.placeholder}
                           />
@@ -456,88 +478,9 @@ const Builder = () => {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold text-muted-foreground">Live Preview</h3>
-                <div className="flex gap-2">
-                  {["Mobile", "Desktop"].map((view) => (
-                    <button
-                      key={view}
-                      className="px-3 py-1.5 rounded-lg bg-secondary/50 text-sm font-medium hover:bg-secondary transition-smooth"
-                    >
-                      {view}
-                    </button>
-                  ))}
-                </div>
               </div>
 
-              <Card className="p-10 bg-gradient-to-br from-card via-card to-secondary/50 border-2 border-primary/20 shadow-2xl hover:shadow-gold-glow transition-all duration-500 rounded-3xl">
-                <div className="text-center space-y-6">
-                  {/* Profile Image with Gold Ring */}
-                  <motion.div 
-                    className="relative inline-block"
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <div className="w-32 h-32 mx-auto rounded-full bg-gradient-to-br from-primary via-primary to-primary/60 flex items-center justify-center ring-4 ring-primary/20 ring-offset-4 ring-offset-card shadow-gold-glow">
-                      <span className="text-4xl font-bold text-primary-foreground">
-                        {cardData.name.split(' ').map(n => n[0]).join('').toUpperCase()}
-                      </span>
-                    </div>
-                    <motion.div
-                      className="absolute -inset-2 rounded-full bg-gradient-to-r from-primary/20 to-primary/0"
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-                    />
-                  </motion.div>
-
-                  {/* Name & Role */}
-                  <div className="space-y-2">
-                    <h2 className="text-3xl font-bold">{cardData.name}</h2>
-                    <p className="text-primary font-semibold text-lg">{cardData.role}</p>
-                    <p className="text-muted-foreground flex items-center justify-center gap-2">
-                      <Building className="w-4 h-4" />
-                      {cardData.company}
-                    </p>
-                  </div>
-
-                  {/* Bio */}
-                  <p className="text-muted-foreground text-sm leading-relaxed">{cardData.bio}</p>
-
-                  {/* Contact Buttons */}
-                  <div className="space-y-3 pt-4">
-                    <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                      <Button 
-                        variant="outline" 
-                        className="w-full border-primary/30 hover:bg-primary/10 justify-start h-12 rounded-xl font-medium"
-                      >
-                        <Mail className="w-5 h-5 mr-3 text-primary" />
-                        {cardData.email}
-                      </Button>
-                    </motion.div>
-                    <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                      <Button 
-                        variant="outline"
-                        className="w-full border-primary/30 hover:bg-primary/10 justify-start h-12 rounded-xl font-medium"
-                      >
-                        <Phone className="w-5 h-5 mr-3 text-primary" />
-                        {cardData.phone}
-                      </Button>
-                    </motion.div>
-                  </div>
-
-                  {/* Social Icons */}
-                  <div className="flex justify-center gap-3 pt-6">
-                    {[Instagram, Linkedin, Twitter, Facebook].map((Icon, i) => (
-                      <motion.button
-                        key={i}
-                        whileHover={{ scale: 1.1, boxShadow: "0 0 20px rgba(212, 175, 55, 0.4)" }}
-                        whileTap={{ scale: 0.95 }}
-                        className="w-12 h-12 rounded-full bg-gradient-to-br from-secondary to-secondary/50 border border-primary/20 flex items-center justify-center transition-smooth"
-                      >
-                        <Icon className="w-5 h-5 text-muted-foreground" />
-                      </motion.button>
-                    ))}
-                  </div>
-                </div>
-              </Card>
+              <MobilePreview cardData={cardData} />
             </div>
           </motion.div>
         </div>
