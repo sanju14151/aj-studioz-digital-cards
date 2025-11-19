@@ -37,10 +37,13 @@ import QRCodeCustomizer from "@/components/QRCodeCustomizer";
 import ImageUpload from "@/components/ImageUpload";
 import MobilePreview from "@/components/MobilePreview";
 import { downloadVCard, shareVCard, shareCardLink, VCardData } from "@/lib/vcard-generator";
+import IndustrySelectorModal from "@/components/IndustrySelectorModal";
+import LocationAutocomplete from "@/components/LocationAutocomplete";
 
 const Builder = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [showIndustryModal, setShowIndustryModal] = useState(false);
   const [cardData, setCardData] = useState({
     name: "John Doe",
     role: "Creative Director",
@@ -59,7 +62,8 @@ const Builder = () => {
       twitter: "",
       facebook: "",
       youtube: "",
-    }
+    },
+    youtubeChannel: "",
   });
 
   const handleSave = async () => {
@@ -344,34 +348,37 @@ const Builder = () => {
                     </div>
 
                     <div>
-                      <Label htmlFor="industry" className="text-base font-semibold mb-3 block">Industry</Label>
-                      <select
-                        id="industry"
-                        value={cardData.industry}
-                        onChange={(e) => setCardData({ ...cardData, industry: e.target.value })}
-                        className="h-12 w-full px-4 bg-background/50 border border-border/50 focus:border-primary rounded-xl"
+                      <Label className="text-base font-semibold mb-3 block">Industry</Label>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setShowIndustryModal(true)}
+                        className="w-full h-12 justify-start text-left font-normal bg-background/50 border-border/50 hover:border-primary rounded-xl"
                       >
-                        <option value="Technology">💻 Technology</option>
-                        <option value="Healthcare">🏥 Healthcare</option>
-                        <option value="Finance">💰 Finance</option>
-                        <option value="Education">📚 Education</option>
-                        <option value="Marketing">📢 Marketing</option>
-                        <option value="Real Estate">🏠 Real Estate</option>
-                        <option value="Retail">🛍️ Retail</option>
-                        <option value="Hospitality">🏨 Hospitality</option>
-                        <option value="Entertainment">🎬 Entertainment</option>
-                        <option value="Food & Beverage">🍽️ Food & Beverage</option>
-                        <option value="Consulting">💼 Consulting</option>
-                        <option value="Creative">🎨 Creative</option>
-                        <option value="Legal">⚖️ Legal</option>
-                        <option value="Construction">🏗️ Construction</option>
-                        <option value="Manufacturing">🏭 Manufacturing</option>
-                        <option value="Transportation">🚗 Transportation</option>
-                        <option value="Telecommunications">📱 Telecommunications</option>
-                        <option value="Media">📺 Media</option>
-                        <option value="Non-Profit">❤️ Non-Profit</option>
-                        <option value="Other">🔧 Other</option>
-                      </select>
+                        <span className="mr-2">
+                          {cardData.industry === 'Technology' && '💻'}
+                          {cardData.industry === 'Healthcare' && '🏥'}
+                          {cardData.industry === 'Finance' && '💰'}
+                          {cardData.industry === 'Education' && '📚'}
+                          {cardData.industry === 'Marketing' && '📢'}
+                          {cardData.industry === 'Real Estate' && '🏠'}
+                          {cardData.industry === 'Retail' && '🛍️'}
+                          {cardData.industry === 'Hospitality' && '🏨'}
+                          {cardData.industry === 'Entertainment' && '🎬'}
+                          {cardData.industry === 'Food & Beverage' && '🍽️'}
+                          {cardData.industry === 'Consulting' && '💼'}
+                          {cardData.industry === 'Creative' && '🎨'}
+                          {cardData.industry === 'Legal' && '⚖️'}
+                          {cardData.industry === 'Construction' && '🏗️'}
+                          {cardData.industry === 'Manufacturing' && '🏭'}
+                          {cardData.industry === 'Transportation' && '🚗'}
+                          {cardData.industry === 'Telecommunications' && '📱'}
+                          {cardData.industry === 'Media' && '📺'}
+                          {cardData.industry === 'Non-Profit' && '❤️'}
+                          {cardData.industry === 'Other' && '🔧'}
+                        </span>
+                        {cardData.industry || 'Select your industry'}
+                      </Button>
                     </div>
 
                     <div>
@@ -423,17 +430,12 @@ const Builder = () => {
                     </div>
 
                     <div>
-                      <Label htmlFor="location" className="text-base font-semibold mb-3 block">Location</Label>
-                      <div className="relative">
-                        <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                        <Input
-                          id="location"
-                          value={cardData.location}
-                          onChange={(e) => setCardData({ ...cardData, location: e.target.value })}
-                          className="h-12 pl-12 bg-background/50 border-border/50 focus:border-primary rounded-xl"
-                          placeholder="City, Country"
-                        />
-                      </div>
+                      <Label className="text-base font-semibold mb-3 block">Location</Label>
+                      <LocationAutocomplete
+                        value={cardData.location}
+                        onChange={(value) => setCardData({ ...cardData, location: value })}
+                        placeholder="City, Country"
+                      />
                     </div>
 
                     <div>
@@ -446,6 +448,20 @@ const Builder = () => {
                           onChange={(e) => setCardData({ ...cardData, website: e.target.value })}
                           className="h-12 pl-12 bg-background/50 border-border/50 focus:border-primary rounded-xl"
                           placeholder="yourwebsite.com"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="youtubeChannel" className="text-base font-semibold mb-3 block">YouTube Channel</Label>
+                      <div className="relative">
+                        <Youtube className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                        <Input
+                          id="youtubeChannel"
+                          value={cardData.youtubeChannel}
+                          onChange={(e) => setCardData({ ...cardData, youtubeChannel: e.target.value })}
+                          className="h-12 pl-12 bg-background/50 border-border/50 focus:border-primary rounded-xl"
+                          placeholder="@yourchannel or Channel ID"
                         />
                       </div>
                     </div>
@@ -567,6 +583,14 @@ const Builder = () => {
           </motion.div>
         </div>
       </div>
+
+      {/* Industry Selector Modal */}
+      <IndustrySelectorModal
+        open={showIndustryModal}
+        onClose={() => setShowIndustryModal(false)}
+        selectedIndustry={cardData.industry}
+        onSelect={(industry) => setCardData({ ...cardData, industry })}
+      />
     </div>
   );
 };
