@@ -18,7 +18,8 @@ import {
   Mail,
   BarChart3,
   Zap,
-  ChevronDown
+  ChevronDown,
+  IdCard
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -33,6 +34,11 @@ const menuItems = [
     title: 'Web Cards',
     icon: CreditCard,
     path: '/dashboard',
+  },
+  {
+    title: 'ID Cards',
+    icon: IdCard,
+    path: '/dashboard/id-cards',
   },
   {
     title: 'NFC Cards',

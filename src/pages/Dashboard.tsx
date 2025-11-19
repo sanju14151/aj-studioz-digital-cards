@@ -74,6 +74,7 @@ const Dashboard = () => {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [cardToDelete, setCardToDelete] = useState<UserCard | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [qrStyle, setQrStyle] = useState<'burgundy' | 'purple' | 'dark'>('burgundy');
 
   useEffect(() => {
     loadUserCards();
@@ -167,30 +168,28 @@ const Dashboard = () => {
     }
   };
 
-  const handleShowQRCode = async (card: UserCard) => {
-    setSelectedCardForQR(card);
-    setQrModalOpen(true);
+  const generateQRCode = async (style: 'burgundy' | 'purple' | 'dark') => {
+    if (!qrCanvasRef.current || !selectedCardForQR) return;
     
-    // Generate stylish QR code with logo
-    setTimeout(async () => {
-      if (qrCanvasRef.current) {
-        const url = `${window.location.origin}/${card.username}`;
-        try {
-          // Generate QR code with maroon/burgundy color
-          await QRCode.toCanvas(qrCanvasRef.current, url, {
-            width: 400,
-            margin: 2,
-            color: {
-              dark: '#6B2C49', // Maroon/Burgundy color like in image
-              light: '#FFFFFF',
-            },
-            errorCorrectionLevel: 'H', // High error correction for logo overlay
-          });
+    const url = `${window.location.origin}/${selectedCardForQR.username}`;
+    const colors = {
+      burgundy: { dark: '#6B2C49', light: '#FFFFFF' },
+      purple: { dark: '#8B2C8B', light: '#FFFFFF' },
+      dark: { dark: '#2C2C2C', light: '#FFFFFF' },
+    };
 
-          // Add logo and text in center
-          const canvas = qrCanvasRef.current;
-          const ctx = canvas.getContext('2d');
-          if (ctx) {
+    try {
+      await QRCode.toCanvas(qrCanvasRef.current, url, {
+        width: 400,
+        margin: 2,
+        color: colors[style],
+        errorCorrectionLevel: 'H',
+      });
+
+      // Add logo and text in center
+      const canvas = qrCanvasRef.current;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
             // Create white circle background for logo
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
@@ -207,21 +206,30 @@ const Dashboard = () => {
             logo.onload = () => {
               ctx.drawImage(logo, centerX - logoSize / 2, centerY - logoSize / 2 - 15, logoSize, logoSize);
               
-              // Add "AJ" text below logo
-              ctx.fillStyle = '#000000';
-              ctx.font = 'bold 24px Arial';
-              ctx.textAlign = 'center';
-              ctx.textBaseline = 'middle';
-              ctx.fillText('AJ', centerX, centerY + 35);
-            };
-            logo.src = '/AJ.svg';
-          }
-        } catch (error) {
-          console.error('Error generating QR code:', error);
-          toast.error('Failed to generate QR code');
-        }
-      }
-    }, 100);
+        // Add "AJ" text below logo
+        ctx.fillStyle = '#000000';
+        ctx.font = 'bold 24px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('AJ', centerX, centerY + 35);
+      };
+      logo.src = '/AJ.svg';
+    }
+    } catch (error) {
+      console.error('Error generating QR code:', error);
+      toast.error('Failed to generate QR code');
+    }
+  };
+
+  const handleShowQRCode = async (card: UserCard) => {
+    setSelectedCardForQR(card);
+    setQrModalOpen(true);
+    setTimeout(() => generateQRCode(qrStyle), 100);
+  };
+
+  const handleQRStyleChange = (style: 'burgundy' | 'purple' | 'dark') => {
+    setQrStyle(style);
+    generateQRCode(style);
   };
 
   const handleDownloadQR = () => {
@@ -531,6 +539,34 @@ const Dashboard = () => {
           </DialogHeader>
           
           <div className="flex flex-col items-center gap-4 py-4">
+            {/* QR Style Selector */}
+            <div className="w-full">
+              <p className="text-sm font-semibold mb-2 text-center">Choose QR Style</p>
+              <div className="grid grid-cols-3 gap-2">
+                <button
+                  onClick={() => handleQRStyleChange('burgundy')}
+                  className={`p-3 rounded-lg border-2 transition-all ${qrStyle === 'burgundy' ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:border-purple-300'}`}
+                >
+                  <div className="w-full aspect-square bg-gradient-to-br from-purple-600 to-pink-600 rounded-md mb-1"></div>
+                  <p className="text-xs font-medium">Burgundy</p>
+                </button>
+                <button
+                  onClick={() => handleQRStyleChange('purple')}
+                  className={`p-3 rounded-lg border-2 transition-all ${qrStyle === 'purple' ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:border-purple-300'}`}
+                >
+                  <div className="w-full aspect-square bg-gradient-to-br from-purple-500 to-purple-700 rounded-md mb-1"></div>
+                  <p className="text-xs font-medium">Purple</p>
+                </button>
+                <button
+                  onClick={() => handleQRStyleChange('dark')}
+                  className={`p-3 rounded-lg border-2 transition-all ${qrStyle === 'dark' ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:border-purple-300'}`}
+                >
+                  <div className="w-full aspect-square bg-gradient-to-br from-gray-700 to-gray-900 rounded-md mb-1"></div>
+                  <p className="text-xs font-medium">Dark</p>
+                </button>
+              </div>
+            </div>
+
             {/* QR Code Canvas with Styling */}
             <div className="bg-white p-6 rounded-2xl shadow-2xl border-4 border-gray-100">
               <canvas ref={qrCanvasRef} className="rounded-lg" />
