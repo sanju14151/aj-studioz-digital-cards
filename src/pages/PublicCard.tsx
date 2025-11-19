@@ -125,7 +125,7 @@ const PublicCard = () => {
     }
   }, [username]);
 
-  const handleSaveContact = () => {
+  const handleSaveContact = async () => {
     if (!cardData) return;
 
     const vCardData: VCardData = {
@@ -139,6 +139,25 @@ const PublicCard = () => {
       photo: cardData.profileImageUrl,
       socialLinks: cardData.socialLinks,
     };
+
+    // Track click
+    try {
+      const { getCardByUsername } = await import('@/lib/api-client');
+      const card = await getCardByUsername(cardData.username);
+      if (card) {
+        await fetch('/api/analytics/click', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            cardId: card.id,
+            clickType: 'save_contact',
+            clickTarget: 'vcard_download'
+          })
+        });
+      }
+    } catch (error) {
+      console.error('Error tracking click:', error);
+    }
 
     downloadVCard(vCardData, cardData.username);
     toast.success('Contact saved!', {

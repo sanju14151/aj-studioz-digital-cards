@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useAuth } from "@/contexts/AuthContext";
 import { 
   User, 
   Briefcase, 
@@ -39,6 +40,7 @@ import { downloadVCard, shareVCard, shareCardLink, VCardData } from "@/lib/vcard
 
 const Builder = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [cardData, setCardData] = useState({
     name: "John Doe",
     role: "Creative Director",
@@ -59,10 +61,57 @@ const Builder = () => {
     }
   });
 
-  const handleSave = () => {
-    toast.success("Card saved successfully!", {
-      description: "Your changes have been saved"
-    });
+  const handleSave = async () => {
+    if (!user) {
+      toast.error("Please login to save your card");
+      navigate('/auth');
+      return;
+    }
+
+    try {
+      const { createCard, updateCard, generateUsername } = await import('@/lib/api-client');
+      
+      // Generate username from name if not exists
+      const username = await generateUsername(cardData.name);
+      
+      // Prepare social links
+      const socialLinksArray = Object.entries(cardData.socialLinks)
+        .filter(([_, url]) => url)
+        .map(([platform, url], index) => ({
+          platform,
+          url: url as string,
+          order: index
+        }));
+
+      // Create or update card
+      const cardDataForAPI = {
+        username,
+        full_name: cardData.name,
+        role: cardData.role,
+        company: cardData.company,
+        bio: cardData.bio,
+        profile_image: cardData.profileImage,
+        cover_image: cardData.coverImage,
+        email: cardData.email,
+        phone: cardData.phone,
+        website: cardData.website,
+        location: cardData.location,
+      };
+
+      await createCard(user.id, cardDataForAPI, socialLinksArray);
+      
+      toast.success("Card saved successfully!", {
+        description: "Your card has been published"
+      });
+      
+      // Redirect to dashboard
+      setTimeout(() => navigate('/dashboard'), 1000);
+    } catch (error) {
+      console.error('Error saving card:', error);
+      toast.error("Failed to save card", {
+        description: "Please try again"
+      });
+    }
   };
 
   const handlePreview = () => {

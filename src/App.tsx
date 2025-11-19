@@ -9,6 +9,9 @@ import Builder from "./pages/Builder";
 import Auth from "./pages/Auth";
 import Preview from "./pages/Preview";
 import PublicCard from "./pages/PublicCard";
+import Dashboard from "./pages/Dashboard";
+import IDCards from "./pages/IDCards";
+import YoutubeIDCardCreator from "./pages/YoutubeIDCardCreator";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +28,9 @@ const App = () => (
             <Route path="/builder" element={<Builder />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/preview" element={<Preview />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard/id-cards" element={<IDCards />} />
+            <Route path="/create/youtube-id-card" element={<YoutubeIDCardCreator />} />
             {/* Public card routes - username based like wcard.io */}
             <Route path="/:username" element={<PublicCard />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
