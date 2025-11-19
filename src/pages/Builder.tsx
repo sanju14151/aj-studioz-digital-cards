@@ -23,12 +23,17 @@ import {
   Youtube,
   Globe,
   MapPin,
-  Building
+  Building,
+  QrCode,
+  Download,
+  Share2
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { MotionCard, MotionButton, MotionIcon, MotionAvatar } from "@/components/motion";
+import QRCodeCustomizer from "@/components/QRCodeCustomizer";
+import { downloadVCard, shareVCard, shareCardLink, VCardData } from "@/lib/vcard-generator";
 
 const Builder = () => {
   const navigate = useNavigate();
@@ -51,6 +56,35 @@ const Builder = () => {
 
   const handlePreview = () => {
     navigate("/preview");
+  };
+
+  const handleSaveContact = () => {
+    const vCardData: VCardData = {
+      fullName: cardData.name,
+      organization: cardData.company,
+      title: cardData.role,
+      email: cardData.email,
+      phone: cardData.phone,
+      website: cardData.website,
+      address: cardData.location,
+    };
+    downloadVCard(vCardData);
+    toast.success("Contact saved!", {
+      description: "Contact card downloaded successfully"
+    });
+  };
+
+  const handleShare = async () => {
+    try {
+      await shareCardLink("johndoe");
+      toast.success("Link copied!", {
+        description: "Card link copied to clipboard"
+      });
+    } catch (error) {
+      toast.error("Failed to share", {
+        description: "Could not share card link"
+      });
+    }
   };
 
   return (
@@ -89,13 +123,30 @@ const Builder = () => {
             </span>
           </motion.div>
           
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <MotionButton 
               variant="outline" 
               onClick={handlePreview}
+              size="sm"
             >
               <Eye className="w-4 h-4 mr-2" />
               Preview
+            </MotionButton>
+            <MotionButton 
+              variant="outline" 
+              onClick={handleSaveContact}
+              size="sm"
+            >
+              <Download className="w-4 h-4 mr-2" />
+              Save Contact
+            </MotionButton>
+            <MotionButton 
+              variant="outline" 
+              onClick={handleShare}
+              size="sm"
+            >
+              <Share2 className="w-4 h-4 mr-2" />
+              Share
             </MotionButton>
             <MotionButton 
               variant="gold"
@@ -130,7 +181,7 @@ const Builder = () => {
             transition={{ duration: 0.5, delay: 0.1 }}
           >
             <Tabs defaultValue="profile" className="w-full">
-              <TabsList className="grid w-full grid-cols-4 bg-secondary/50 backdrop-blur-sm p-1.5 rounded-xl border border-border/50">
+              <TabsList className="grid w-full grid-cols-5 bg-secondary/50 backdrop-blur-sm p-1.5 rounded-xl border border-border/50">
                 <TabsTrigger 
                   value="profile"
                   className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium"
@@ -151,6 +202,13 @@ const Builder = () => {
                 >
                   <Link2 className="w-4 h-4 mr-2" />
                   Socials
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="qrcode"
+                  className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium"
+                >
+                  <QrCode className="w-4 h-4 mr-2" />
+                  QR Code
                 </TabsTrigger>
                 <TabsTrigger 
                   value="theme"
@@ -318,6 +376,21 @@ const Builder = () => {
                         </div>
                       </div>
                     ))}
+                  </div>
+                </Card>
+              </TabsContent>
+
+              {/* QR Code Tab */}
+              <TabsContent value="qrcode" className="space-y-6 mt-8">
+                <Card className="p-8 bg-gradient-to-br from-card to-secondary/30 border-2 border-border/50 rounded-2xl backdrop-blur-sm">
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="text-2xl font-bold mb-2">QR Code Customization</h3>
+                      <p className="text-muted-foreground">
+                        Customize your QR code style, colors, and appearance
+                      </p>
+                    </div>
+                    <QRCodeCustomizer username="johndoe" />
                   </div>
                 </Card>
               </TabsContent>
