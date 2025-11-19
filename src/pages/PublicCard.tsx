@@ -20,8 +20,10 @@ import {
   Facebook,
   Youtube,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  MessageCircle
 } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import { downloadVCard, shareVCard, VCardData } from '@/lib/vcard-generator';
@@ -227,46 +229,27 @@ const PublicCard = () => {
   ].filter(social => social.link);
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Cover Image */}
-      {cardData.coverImageUrl && (
-        <div className="relative h-64 w-full">
-          <img
-            src={cardData.coverImageUrl}
-            alt="Cover"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
-        </div>
-      )}
-
-      {/* AJ STUDIOZ Watermark */}
-      <div className="fixed bottom-4 right-4 z-50 opacity-30 hover:opacity-70 transition-opacity">
-        <div className="text-2xl font-bold text-gradient-gold tracking-wider" style={{ fontFamily: 'system-ui' }}>
-          AJ STUDIOZ
-        </div>
-      </div>
-
-      {/* Card Content */}
-      <div className={`max-w-2xl mx-auto px-6 ${cardData.coverImageUrl ? '-mt-24 relative' : 'pt-16'} pb-16`}>
-        {/* Profile Section */}
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      {/* Card Container */}
+      <div className="max-w-2xl mx-auto min-h-screen flex flex-col">
+        {/* Header Card */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-center space-y-6 mb-8"
+          className="bg-gradient-to-br from-slate-800 to-slate-700 rounded-b-3xl shadow-2xl p-8 text-center"
         >
-          {/* Profile Image */}
-          <div className="flex justify-center">
+          {/* Logo/Profile Image */}
+          <div className="flex justify-center mb-6">
             <motion.div
               whileHover={{ scale: 1.05 }}
               className="relative"
             >
               <div 
-                className="w-32 h-32 rounded-full flex items-center justify-center text-3xl font-bold shadow-2xl border-4 border-background overflow-hidden"
+                className="w-32 h-32 rounded-full flex items-center justify-center text-3xl font-bold shadow-2xl overflow-hidden bg-gradient-to-br"
                 style={{ 
-                  background: cardData.profileImageUrl ? 'transparent' : `linear-gradient(135deg, ${primaryColor}, ${primaryColor}dd)`,
-                  color: cardData.profileImageUrl ? 'inherit' : '#000'
+                  background: cardData.profileImageUrl ? 'transparent' : `linear-gradient(135deg, ${primaryColor}, #ff6b9d)`,
+                  border: '4px solid rgba(255,255,255,0.1)'
                 }}
               >
                 {cardData.profileImageUrl ? (
@@ -276,197 +259,175 @@ const PublicCard = () => {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  cardData.fullName.split(' ').map(n => n[0]).join('').toUpperCase()
+                  <div className="w-full h-full flex items-center justify-center">
+                    <img src="/AJ.svg" alt="Logo" className="w-20 h-20" />
+                  </div>
                 )}
               </div>
             </motion.div>
           </div>
 
           {/* Name & Title */}
-          <div className="space-y-2">
-            <h1 className="text-4xl font-bold tracking-tight">{cardData.fullName}</h1>
-            <p className="text-xl font-semibold" style={{ color: primaryColor }}>
-              {cardData.role}
-            </p>
-            {cardData.company && (
-              <p className="text-muted-foreground">{cardData.company}</p>
-            )}
-            {cardData.industry && (
-              <span className="inline-block px-3 py-1 text-sm rounded-full bg-primary/10 text-primary font-medium">
-                {cardData.industry}
-              </span>
-            )}
-          </div>
-
-          {/* Bio */}
-          {cardData.bio && (
-            <p className="text-muted-foreground max-w-lg mx-auto leading-relaxed">
-              {cardData.bio}
-            </p>
-          )}
-        </motion.div>
-
-        {/* Action Buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="grid grid-cols-2 gap-4 mb-8"
-        >
-          <Button
-            size="lg"
-            className="h-14 text-base font-semibold"
-            style={{
-              backgroundColor: primaryColor,
-              color: '#000'
-            }}
-            onClick={handleSaveContact}
-          >
-            <Download className="w-5 h-5 mr-2" />
-            Save Contact
-          </Button>
-          <Button
-            size="lg"
-            variant="outline"
-            className="h-14 text-base font-semibold"
-            onClick={handleShare}
-          >
-            <Share2 className="w-5 h-5 mr-2" />
-            Share
-          </Button>
-        </motion.div>
-
-        {/* Contact Information */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="space-y-3 mb-8"
-        >
-          {cardData.email && (
-            <a
-              href={`mailto:${cardData.email}`}
-              className="flex items-center gap-4 p-4 rounded-2xl bg-secondary/50 hover:bg-secondary transition-colors group"
-            >
-              <div 
-                className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ backgroundColor: `${primaryColor}20` }}
-              >
-                <Mail className="w-6 h-6" style={{ color: primaryColor }} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-xs text-muted-foreground mb-0.5">Email</p>
-                <p className="font-medium truncate">{cardData.email}</p>
-              </div>
-            </a>
-          )}
-
+          <h1 className="text-3xl font-bold text-white mb-2">{cardData.fullName.toUpperCase()}</h1>
+          <p className="text-lg text-gray-300 mb-4">{cardData.role} - {cardData.company}</p>
+          
+          {/* WhatsApp Button */}
           {cardData.phone && (
             <a
-              href={`tel:${cardData.phone}`}
-              className="flex items-center gap-4 p-4 rounded-2xl bg-secondary/50 hover:bg-secondary transition-colors"
-            >
-              <div 
-                className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ backgroundColor: `${primaryColor}20` }}
-              >
-                <Phone className="w-6 h-6" style={{ color: primaryColor }} />
-              </div>
-              <div className="flex-1">
-                <p className="text-xs text-muted-foreground mb-0.5">Phone</p>
-                <p className="font-medium">{cardData.phone}</p>
-              </div>
-            </a>
-          )}
-
-          {cardData.website && (
-            <a
-              href={`https://${cardData.website}`}
+              href={`https://wa.me/${cardData.phone.replace(/\D/g, '')}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-4 p-4 rounded-2xl bg-secondary/50 hover:bg-secondary transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-full transition-all shadow-lg mb-4"
             >
-              <div 
-                className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ backgroundColor: `${primaryColor}20` }}
-              >
-                <Globe className="w-6 h-6" style={{ color: primaryColor }} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-xs text-muted-foreground mb-0.5">Website</p>
-                <p className="font-medium truncate">{cardData.website}</p>
-              </div>
+              <MessageCircle className="w-5 h-5" />
+              Ask me about
             </a>
-          )}
-
-          {cardData.location && (
-            <div className="flex items-center gap-4 p-4 rounded-2xl bg-secondary/50">
-              <div 
-                className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ backgroundColor: `${primaryColor}20` }}
-              >
-                <MapPin className="w-6 h-6" style={{ color: primaryColor }} />
-              </div>
-              <div className="flex-1">
-                <p className="text-xs text-muted-foreground mb-0.5">Location</p>
-                <p className="font-medium">{cardData.location}</p>
-              </div>
-            </div>
           )}
         </motion.div>
 
-        {/* Social Links */}
-        {socialIcons.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="space-y-4"
-          >
-            <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide text-center">
-              Connect with me
-            </h3>
-            <div className="flex justify-center gap-4">
-              {socialIcons.map(({ icon, link, label, color, isImage }) => (
-                <motion.a
+        {/* Tabs Navigation */}
+        <Tabs defaultValue="home" className="flex-1 flex flex-col">
+          <TabsList className="grid w-full grid-cols-2 bg-slate-800/50 backdrop-blur-sm sticky top-0 z-10">
+            <TabsTrigger value="home" className="text-white data-[state=active]:bg-slate-700">Home</TabsTrigger>
+            <TabsTrigger value="contact" className="text-white data-[state=active]:bg-slate-700">Contact Us</TabsTrigger>
+          </TabsList>
+
+          {/* Home Tab */}
+          <TabsContent value="home" className="flex-1 p-6 space-y-6">
+
+            {/* About Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6"
+            >
+              <h2 className="text-xl font-bold text-white mb-4">About</h2>
+              {cardData.bio && (
+                <p className="text-gray-300 leading-relaxed">
+                  {cardData.bio}
+                </p>
+              )}
+            </motion.div>
+
+            {/* Links Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="space-y-4"
+            >
+              <h3 className="text-lg font-semibold text-white mb-4">Links</h3>
+              {cardData.email && (
+                <a
+                  href={`mailto:${cardData.email}`}
+                  className="flex items-center justify-between p-4 rounded-xl bg-slate-700/50 hover:bg-slate-700 transition-all group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-full bg-amber-500/20 flex items-center justify-center">
+                      <Mail className="w-6 h-6 text-amber-500" />
+                    </div>
+                    <div>
+                      <p className="text-white font-medium truncate">{cardData.email}</p>
+                      <p className="text-xs text-gray-400">Email</p>
+                    </div>
+                  </div>
+                  <span className="text-gray-400 group-hover:text-white transition-colors">→</span>
+                </a>
+              )}
+
+              {socialIcons.map(({ icon, link, label, isImage }) => (
+                <a
                   key={label}
                   href={link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  whileHover={{ scale: 1.1, y: -4 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="w-14 h-14 rounded-2xl flex items-center justify-center transition-all shadow-lg"
-                  style={{
-                    backgroundColor: isImage ? 'transparent' : `${primaryColor}15`,
-                    border: isImage ? 'none' : `2px solid ${primaryColor}30`
-                  }}
-                  title={label}
+                  className="flex items-center justify-between p-4 rounded-xl bg-slate-700/50 hover:bg-slate-700 transition-all group"
                 >
-                  {isImage ? (
-                    <img src={icon as string} alt={label} className="w-10 h-10" />
-                  ) : (
-                    React.createElement(icon as any, { className: "w-6 h-6", style: { color: primaryColor } })
-                  )}
-                </motion.a>
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center">
+                      {isImage ? (
+                        <img src={icon as string} alt={label} className="w-7 h-7" />
+                      ) : (
+                        React.createElement(icon as any, { className: "w-6 h-6 text-white" })
+                      )}
+                    </div>
+                    <div>
+                      <p className="text-white font-medium">@{label.replace(' ', '')}</p>
+                      <p className="text-xs text-gray-400">{label}</p>
+                    </div>
+                  </div>
+                  <span className="text-gray-400 group-hover:text-white transition-colors">→</span>
+                </a>
               ))}
-            </div>
-          </motion.div>
-        )}
+            </motion.div>
+          </TabsContent>
 
-        {/* Powered by */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="mt-16 text-center"
-        >
-          <a
-            href="/"
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+          {/* Contact Us Tab */}
+          <TabsContent value="contact" className="flex-1 p-6 space-y-4">
+            <div className="space-y-4">
+              {cardData.email && (
+                <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-4">
+                  <p className="text-sm text-gray-400 mb-1">Email</p>
+                  <a href={`mailto:${cardData.email}`} className="text-white font-medium hover:text-amber-500 transition-colors">
+                    {cardData.email}
+                  </a>
+                </div>
+              )}
+              {cardData.phone && (
+                <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-4">
+                  <p className="text-sm text-gray-400 mb-1">Phone</p>
+                  <a href={`tel:${cardData.phone}`} className="text-white font-medium hover:text-amber-500 transition-colors">
+                    {cardData.phone}
+                  </a>
+                </div>
+              )}
+              {cardData.website && (
+                <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-4">
+                  <p className="text-sm text-gray-400 mb-1">Website</p>
+                  <a href={`https://${cardData.website}`} target="_blank" rel="noopener noreferrer" className="text-white font-medium hover:text-amber-500 transition-colors">
+                    {cardData.website}
+                  </a>
+                </div>
+              )}
+              {cardData.location && (
+                <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-4">
+                  <p className="text-sm text-gray-400 mb-1">Location</p>
+                  <p className="text-white font-medium">{cardData.location}</p>
+                </div>
+              )}
+            </div>
+          </TabsContent>
+        </Tabs>
+
+        {/* Action Buttons */}
+        <div className="sticky bottom-0 bg-slate-800/95 backdrop-blur-sm p-4 flex gap-3 border-t border-slate-700">
+          <Button
+            onClick={handleShare}
+            className="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-semibold py-6"
           >
-            Powered by <span className="font-bold text-gradient-gold">AJ STUDIOZ</span>
-          </a>
-        </motion.div>
+            <Share2 className="w-5 h-5 mr-2" />
+            Send
+          </Button>
+          <Button
+            onClick={handleSaveContact}
+            className="flex-1 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold py-6"
+          >
+            <Download className="w-5 h-5 mr-2" />
+            Save Contact
+          </Button>
+        </div>
+
+        {/* Footer */}
+        <div className="bg-slate-900 py-6 text-center">
+          <p className="text-gray-400 text-sm mb-2">© 2025 {cardData.company || 'AJ STUDIOZ'}. All Rights Reserved.</p>
+          <div className="flex items-center justify-center gap-2">
+            <img src="/AJ.svg" alt="AJ STUDIOZ" className="w-6 h-6" />
+            <a href="/" className="text-amber-500 font-bold hover:text-amber-400 transition-colors">
+              AJ STUDIOZ
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   );
