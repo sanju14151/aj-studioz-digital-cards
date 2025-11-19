@@ -171,19 +171,51 @@ const Dashboard = () => {
     setSelectedCardForQR(card);
     setQrModalOpen(true);
     
-    // Generate QR code after modal opens
+    // Generate stylish QR code with logo
     setTimeout(async () => {
       if (qrCanvasRef.current) {
         const url = `${window.location.origin}/${card.username}`;
         try {
+          // Generate QR code with maroon/burgundy color
           await QRCode.toCanvas(qrCanvasRef.current, url, {
-            width: 300,
+            width: 400,
             margin: 2,
             color: {
-              dark: '#000000',
-              light: '#ffffff',
+              dark: '#6B2C49', // Maroon/Burgundy color like in image
+              light: '#FFFFFF',
             },
+            errorCorrectionLevel: 'H', // High error correction for logo overlay
           });
+
+          // Add logo and text in center
+          const canvas = qrCanvasRef.current;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            // Create white circle background for logo
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const logoSize = 80;
+            
+            ctx.fillStyle = '#FFFFFF';
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, logoSize / 2 + 10, 0, 2 * Math.PI);
+            ctx.fill();
+
+            // Load and draw logo
+            const logo = new Image();
+            logo.crossOrigin = 'anonymous';
+            logo.onload = () => {
+              ctx.drawImage(logo, centerX - logoSize / 2, centerY - logoSize / 2 - 15, logoSize, logoSize);
+              
+              // Add "AJ" text below logo
+              ctx.fillStyle = '#000000';
+              ctx.font = 'bold 24px Arial';
+              ctx.textAlign = 'center';
+              ctx.textBaseline = 'middle';
+              ctx.fillText('AJ', centerX, centerY + 35);
+            };
+            logo.src = '/AJ.svg';
+          }
         } catch (error) {
           console.error('Error generating QR code:', error);
           toast.error('Failed to generate QR code');
@@ -194,12 +226,39 @@ const Dashboard = () => {
 
   const handleDownloadQR = () => {
     if (qrCanvasRef.current && selectedCardForQR) {
-      const url = qrCanvasRef.current.toDataURL('image/png');
-      const link = document.createElement('a');
-      link.download = `${selectedCardForQR.username}-qr-code.png`;
-      link.href = url;
-      link.click();
-      toast.success('QR code downloaded!');
+      // Create a new canvas with styling text
+      const originalCanvas = qrCanvasRef.current;
+      const styledCanvas = document.createElement('canvas');
+      const padding = 40;
+      const textHeight = 60;
+      
+      styledCanvas.width = originalCanvas.width + (padding * 2);
+      styledCanvas.height = originalCanvas.height + (padding * 2) + textHeight;
+      
+      const ctx = styledCanvas.getContext('2d');
+      if (ctx) {
+        // White background
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, styledCanvas.width, styledCanvas.height);
+        
+        // Draw QR code
+        ctx.drawImage(originalCanvas, padding, padding);
+        
+        // Add "QR CODE STYLING" text at bottom
+        ctx.fillStyle = '#000000';
+        ctx.font = 'bold 20px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('QR CODE', styledCanvas.width / 2, originalCanvas.height + padding + 25);
+        ctx.fillText('STYLING', styledCanvas.width / 2, originalCanvas.height + padding + 50);
+        
+        // Download
+        const url = styledCanvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.download = `${selectedCardForQR.username}-qr-code.png`;
+        link.href = url;
+        link.click();
+        toast.success('QR code downloaded!');
+      }
     }
   };
 
@@ -472,16 +531,20 @@ const Dashboard = () => {
           </DialogHeader>
           
           <div className="flex flex-col items-center gap-4 py-4">
-            {/* QR Code Canvas */}
-            <div className="bg-white p-4 rounded-xl shadow-lg">
-              <canvas ref={qrCanvasRef} />
+            {/* QR Code Canvas with Styling */}
+            <div className="bg-white p-6 rounded-2xl shadow-2xl border-4 border-gray-100">
+              <canvas ref={qrCanvasRef} className="rounded-lg" />
+              <div className="mt-3 text-center">
+                <p className="text-xs font-bold text-gray-800 tracking-wider">QR CODE</p>
+                <p className="text-xs font-bold text-gray-800 tracking-wider">STYLING</p>
+              </div>
             </div>
 
             {/* Card URL */}
-            <div className="w-full p-3 bg-secondary rounded-lg text-center">
-              <p className="text-sm text-muted-foreground mb-1">Card URL</p>
-              <p className="text-sm font-mono font-semibold">
-                {window.location.origin}/{selectedCardForQR?.username}
+            <div className="w-full p-3 bg-gradient-to-r from-purple-100 to-pink-100 rounded-lg text-center border border-purple-200">
+              <p className="text-xs text-purple-700 font-semibold mb-1">Scan to visit</p>
+              <p className="text-sm font-mono font-bold text-purple-900">
+                {window.location.origin.replace('https://', '')}/{selectedCardForQR?.username}
               </p>
             </div>
 
