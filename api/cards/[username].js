@@ -27,9 +27,14 @@ export default async function handler(req, res) {
     const client = await pool.connect();
     
     try {
-      // Get card data
+      // Get card data with proper column names
       const cardResult = await client.query(
-        `SELECT * FROM digital_cards
+        `SELECT id, user_id, username, name, full_name, role, company, bio, 
+                email, phone, website, location, 
+                profile_image_url as profile_image, 
+                cover_image_url as cover_image,
+                theme_id, is_active, is_published, created_at, updated_at
+         FROM digital_cards
          WHERE username = $1 AND is_active = true`,
         [username]
       );

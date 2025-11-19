@@ -3,7 +3,7 @@
  * Shows all user's cards with real analytics
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
@@ -22,7 +22,8 @@ import {
   Trash2,
   Copy,
   ExternalLink,
-  Globe
+  Globe,
+  X
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
@@ -35,6 +36,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import QRCode from 'qrcode';
 
 interface CardStats {
   views: number;
@@ -59,6 +68,9 @@ const Dashboard = () => {
   const [cards, setCards] = useState<UserCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [hasIncompleteCard, setHasIncompleteCard] = useState(false);
+  const [qrModalOpen, setQrModalOpen] = useState(false);
+  const [selectedCardForQR, setSelectedCardForQR] = useState<UserCard | null>(null);
+  const qrCanvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     loadUserCards();
@@ -140,6 +152,42 @@ const Dashboard = () => {
     } catch (error) {
       console.error('Error deleting card:', error);
       toast.error('Failed to delete card');
+    }
+  };
+
+  const handleShowQRCode = async (card: UserCard) => {
+    setSelectedCardForQR(card);
+    setQrModalOpen(true);
+    
+    // Generate QR code after modal opens
+    setTimeout(async () => {
+      if (qrCanvasRef.current) {
+        const url = `${window.location.origin}/${card.username}`;
+        try {
+          await QRCode.toCanvas(qrCanvasRef.current, url, {
+            width: 300,
+            margin: 2,
+            color: {
+              dark: '#000000',
+              light: '#ffffff',
+            },
+          });
+        } catch (error) {
+          console.error('Error generating QR code:', error);
+          toast.error('Failed to generate QR code');
+        }
+      }
+    }, 100);
+  };
+
+  const handleDownloadQR = () => {
+    if (qrCanvasRef.current && selectedCardForQR) {
+      const url = qrCanvasRef.current.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.download = `${selectedCardForQR.username}-qr-code.png`;
+      link.href = url;
+      link.click();
+      toast.success('QR code downloaded!');
     }
   };
 
@@ -348,9 +396,9 @@ const Dashboard = () => {
                     <Button 
                       variant="outline" 
                       size="sm"
-                      onClick={() => handleShareCard(card.username)}
+                      onClick={() => handleShowQRCode(card)}
                     >
-                      <Share2 className="w-4 h-4" />
+                      <QrCode className="w-4 h-4" />
                     </Button>
                     
                     <DropdownMenu>
@@ -367,6 +415,10 @@ const Dashboard = () => {
                         <DropdownMenuItem onClick={() => handleShareCard(card.username)}>
                           <Copy className="w-4 h-4 mr-2" />
                           Copy Link
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleShowQRCode(card)}>
+                          <QrCode className="w-4 h-4 mr-2" />
+                          QR Code
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => navigate(`/analytics/${card.id}`)}>
                           <TrendingUp className="w-4 h-4 mr-2" />
@@ -393,6 +445,63 @@ const Dashboard = () => {
         )}
         </div>
       </div>
+
+      {/* QR Code Modal */}
+      <Dialog open={qrModalOpen} onOpenChange={setQrModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <QrCode className="w-5 h-5" />
+              QR Code for {selectedCardForQR?.full_name}
+            </DialogTitle>
+            <DialogDescription>
+              Scan this QR code to view the card on any device
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="flex flex-col items-center gap-4 py-4">
+            {/* QR Code Canvas */}
+            <div className="bg-white p-4 rounded-xl shadow-lg">
+              <canvas ref={qrCanvasRef} />
+            </div>
+
+            {/* Card URL */}
+            <div className="w-full p-3 bg-secondary rounded-lg text-center">
+              <p className="text-sm text-muted-foreground mb-1">Card URL</p>
+              <p className="text-sm font-mono font-semibold">
+                {window.location.origin}/{selectedCardForQR?.username}
+              </p>
+            </div>
+
+            {/* Actions */}
+            <div className="flex gap-2 w-full">
+              <Button 
+                onClick={handleDownloadQR} 
+                className="flex-1"
+                variant="default"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                Download QR
+              </Button>
+              <Button 
+                onClick={() => selectedCardForQR && handleShareCard(selectedCardForQR.username)} 
+                className="flex-1"
+                variant="outline"
+              >
+                <Share2 className="w-4 h-4 mr-2" />
+                Share Link
+              </Button>
+            </div>
+
+            {/* Instructions */}
+            <div className="w-full p-3 bg-primary/10 rounded-lg">
+              <p className="text-xs text-muted-foreground text-center">
+                Print this QR code on business cards, flyers, or anywhere you want to share your digital card
+              </p>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
