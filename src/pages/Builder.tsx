@@ -173,7 +173,7 @@ const Builder = () => {
             whileHover={{ scale: 1.02 }}
           >
             <div className="relative">
-              <Sparkles className="w-8 h-8 text-primary" />
+              <img src="/AJ.svg" alt="AJ STUDIOZ" className="w-8 h-8" />
               <motion.div
                 className="absolute inset-0 blur-xl bg-primary/30"
                 animate={{

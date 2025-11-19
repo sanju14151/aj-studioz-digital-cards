@@ -51,7 +51,7 @@ const Index = () => {
             transition={{ duration: 0.2 }}
           >
             <div className="relative">
-              <Sparkles className="w-9 h-9 text-primary" />
+              <img src="/AJ.svg" alt="AJ STUDIOZ" className="w-9 h-9" />
               <motion.div
                 className="absolute inset-0 blur-xl bg-primary/30"
                 animate={{

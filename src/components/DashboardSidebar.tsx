@@ -99,12 +99,10 @@ export const DashboardSidebar = () => {
       {/* Logo */}
       <div className="p-5 flex items-center justify-center border-b border-white/10">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-            <svg className="w-5 h-5 text-emerald-600" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
-            </svg>
+          <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center p-1">
+            <img src="/AJ.svg" alt="AJ STUDIOZ" className="w-full h-full" />
           </div>
-          <span className="font-bold text-lg">wCard.io</span>
+          <span className="font-bold text-lg">AJ STUDIOZ</span>
         </div>
       </div>
 

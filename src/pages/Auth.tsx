@@ -107,7 +107,7 @@ const Auth = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <div className="relative">
-              <Sparkles className="w-12 h-12 text-primary" />
+              <img src="/AJ.svg" alt="AJ STUDIOZ" className="w-12 h-12" />
               <motion.div
                 className="absolute inset-0 blur-xl bg-primary/40"
                 animate={{
