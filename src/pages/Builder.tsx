@@ -28,6 +28,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { MotionCard, MotionButton, MotionIcon, MotionAvatar } from "@/components/motion";
 
 const Builder = () => {
   const navigate = useNavigate();
@@ -89,25 +90,20 @@ const Builder = () => {
           </motion.div>
           
           <div className="flex items-center gap-4">
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button 
-                variant="outline" 
-                onClick={handlePreview}
-                className="border-primary/30 hover:bg-primary/5 font-medium"
-              >
-                <Eye className="w-4 h-4 mr-2" />
-                Preview
-              </Button>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button 
-                onClick={handleSave} 
-                className="bg-gradient-to-r from-primary via-primary to-primary/80 text-primary-foreground hover:shadow-gold-glow font-medium"
-              >
-                <Save className="w-4 h-4 mr-2" />
-                Save Card
-              </Button>
-            </motion.div>
+            <MotionButton 
+              variant="outline" 
+              onClick={handlePreview}
+            >
+              <Eye className="w-4 h-4 mr-2" />
+              Preview
+            </MotionButton>
+            <MotionButton 
+              variant="gold"
+              onClick={handleSave}
+            >
+              <Save className="w-4 h-4 mr-2" />
+              Save Card
+            </MotionButton>
           </div>
         </div>
       </motion.header>

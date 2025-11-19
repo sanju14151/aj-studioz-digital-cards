@@ -8,6 +8,7 @@ import { Sparkles, Mail, Lock, User, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { MotionCard, MotionButton } from "@/components/motion";
 
 const Auth = () => {
   const navigate = useNavigate();

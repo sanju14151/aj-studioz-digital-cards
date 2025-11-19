@@ -20,6 +20,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { MotionCard, MotionButton, MotionIcon, MotionAvatar, MotionDivider } from "@/components/motion";
 
 const Preview = () => {
   const navigate = useNavigate();
@@ -88,70 +89,53 @@ const Preview = () => {
           </motion.div>
           
           <div className="flex items-center gap-4">
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button 
-                variant="outline" 
-                onClick={handleShare}
-                className="border-primary/30 hover:bg-primary/5 font-medium"
-              >
-                <Share2 className="w-4 h-4 mr-2" />
-                Share
-              </Button>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button 
-                onClick={() => navigate("/builder")} 
-                className="bg-gradient-to-r from-primary via-primary to-primary/80 text-primary-foreground hover:shadow-gold-glow font-medium"
-              >
-                Edit Card
-              </Button>
-            </motion.div>
+            <MotionButton 
+              variant="outline" 
+              onClick={handleShare}
+            >
+              <Share2 className="w-4 h-4 mr-2" />
+              Share
+            </MotionButton>
+            <MotionButton 
+              variant="gold"
+              onClick={() => navigate("/builder")}
+            >
+              Edit Card
+            </MotionButton>
           </div>
         </div>
       </motion.header>
 
       <div className="container mx-auto px-6 py-12">
         <div className="max-w-2xl mx-auto">
-          {/* Premium Card Preview */}
+          {/* Premium Card Preview with 3D Tilt */}
           <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
           >
             <motion.div variants={itemVariants}>
-              <Card className="p-12 md:p-16 bg-gradient-to-br from-card via-card to-secondary/50 border-2 border-primary/20 shadow-2xl hover:shadow-gold-glow transition-all duration-500 rounded-3xl backdrop-blur-sm">
+              <MotionCard
+                tiltEnabled={true}
+                glowEnabled={true}
+                variant="premium"
+                className="p-12 md:p-16 rounded-3xl"
+              >
                 <div className="text-center space-y-8">
                   {/* Profile Image with Animated Gold Ring */}
-                  <motion.div 
-                    className="relative inline-block"
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ duration: 0.6 }}
-                  >
-                    <div className="w-40 h-40 rounded-full bg-gradient-to-br from-primary via-primary to-primary/60 flex items-center justify-center ring-4 ring-primary/20 ring-offset-8 ring-offset-card shadow-gold-glow">
+                  <MotionAvatar size="xl" goldRing={true}>
+                    <div className="w-full h-full bg-gradient-to-br from-primary via-primary to-primary/60 flex items-center justify-center">
                       <span className="text-5xl font-bold text-primary-foreground">JD</span>
                     </div>
-                    
-                    {/* Rotating Ring Effect */}
-                    <motion.div
-                      className="absolute -inset-4 rounded-full border-2 border-primary/30"
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-                    />
-                    <motion.div
-                      className="absolute -inset-6 rounded-full border border-primary/20"
-                      animate={{ rotate: -360 }}
-                      transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                    />
-
-                    {/* Sparkle Badge */}
-                    <motion.div 
-                      className="absolute -bottom-2 -right-2 w-14 h-14 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center border-4 border-card shadow-gold-glow"
-                      whileHover={{ scale: 1.1 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <Sparkles className="w-7 h-7 text-primary-foreground" />
-                    </motion.div>
+                  </MotionAvatar>
+                  
+                  <motion.div 
+                    className="absolute -bottom-2 -right-2 w-14 h-14 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center border-4 border-card shadow-gold-glow-strong"
+                    style={{ position: "absolute", marginTop: "-60px", marginLeft: "120px" }}
+                    whileHover={{ scale: 1.15, rotate: 15 }}
+                    transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    <Sparkles className="w-7 h-7 text-primary-foreground" />
                   </motion.div>
 
                   {/* Name & Role */}
@@ -197,25 +181,25 @@ const Preview = () => {
                     className="space-y-4 pt-4"
                     variants={itemVariants}
                   >
-                    <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                      <Button 
-                        className="w-full h-14 border-2 border-primary/30 bg-primary/5 hover:bg-primary/10 justify-start rounded-xl font-medium text-base group"
-                        variant="outline"
-                      >
-                        <Mail className="w-5 h-5 mr-3 text-primary group-hover:scale-110 transition-transform" />
-                        john@ajstudioz.com
-                      </Button>
-                    </motion.div>
+                    <MotionButton 
+                      variant="outline"
+                      className="w-full h-14 justify-start text-base group"
+                    >
+                      <MotionIcon hoverEffect="scale" className="mr-3">
+                        <Mail className="w-5 h-5 text-primary" />
+                      </MotionIcon>
+                      john@ajstudioz.com
+                    </MotionButton>
                     
-                    <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                      <Button 
-                        className="w-full h-14 border-2 border-primary/30 bg-primary/5 hover:bg-primary/10 justify-start rounded-xl font-medium text-base group"
-                        variant="outline"
-                      >
-                        <Phone className="w-5 h-5 mr-3 text-primary group-hover:scale-110 transition-transform" />
-                        +1 234 567 8900
-                      </Button>
-                    </motion.div>
+                    <MotionButton 
+                      variant="outline"
+                      className="w-full h-14 justify-start text-base group"
+                    >
+                      <MotionIcon hoverEffect="scale" className="mr-3">
+                        <Phone className="w-5 h-5 text-primary" />
+                      </MotionIcon>
+                      +1 234 567 8900
+                    </MotionButton>
                   </motion.div>
 
                   {/* Social Links */}
@@ -245,32 +229,30 @@ const Preview = () => {
 
                   {/* QR Code Section */}
                   <motion.div 
-                    className="pt-12 border-t border-border/50 space-y-6"
+                    className="pt-12 space-y-6"
                     variants={itemVariants}
                   >
-                    <p className="text-sm text-muted-foreground font-medium">Scan to save contact</p>
+                    <MotionDivider goldAccent={true} />
                     
-                    <motion.div 
-                      className="w-56 h-56 mx-auto bg-gradient-to-br from-secondary/50 to-background rounded-2xl border-2 border-primary/20 flex items-center justify-center shadow-lg"
-                      whileHover={{ scale: 1.05 }}
-                      transition={{ duration: 0.3 }}
+                    <p className="text-sm text-muted-foreground font-medium pt-6">Scan to save contact</p>
+                    
+                    <MotionCard 
+                      className="w-56 h-56 mx-auto bg-gradient-to-br from-secondary/50 to-background flex items-center justify-center"
+                      glowEnabled={true}
                     >
                       <span className="text-muted-foreground font-medium">QR Code Preview</span>
-                    </motion.div>
+                    </MotionCard>
 
-                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                      <Button 
-                        variant="outline"
-                        className="border-2 border-primary/30 hover:bg-primary/10 font-medium rounded-xl"
-                        onClick={handleDownloadQR}
-                      >
-                        <Download className="w-4 h-4 mr-2" />
-                        Download QR Code
-                      </Button>
-                    </motion.div>
+                    <MotionButton 
+                      variant="outline"
+                      onClick={handleDownloadQR}
+                    >
+                      <Download className="w-4 h-4 mr-2" />
+                      Download QR Code
+                    </MotionButton>
                   </motion.div>
                 </div>
-              </Card>
+              </MotionCard>
             </motion.div>
 
             {/* Analytics Stats */}
@@ -284,16 +266,13 @@ const Preview = () => {
                 { icon: TrendingUp, value: "89", label: "Saves", color: "from-green-500/20 to-green-500/5" },
               ].map((stat, i) => (
                 <motion.div key={i} variants={itemVariants}>
-                  <Card className={`p-6 bg-gradient-to-br ${stat.color} border-2 border-border/50 hover:border-primary/30 transition-all hover:shadow-gold-glow rounded-2xl text-center group`}>
-                    <motion.div
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <stat.icon className="w-8 h-8 text-primary mx-auto mb-3" />
-                    </motion.div>
-                    <p className="text-4xl font-bold text-gradient-gold mb-1">{stat.value}</p>
+                  <MotionCard className={`p-6 bg-gradient-to-br ${stat.color} text-center group`} glowEnabled={true}>
+                    <MotionIcon hoverEffect="rotate" size="lg" className="mx-auto mb-3">
+                      <stat.icon className="w-8 h-8 text-primary" />
+                    </MotionIcon>
+                    <p className="text-4xl font-bold gold-shine mb-1">{stat.value}</p>
                     <p className="text-sm text-muted-foreground font-medium">{stat.label}</p>
-                  </Card>
+                  </MotionCard>
                 </motion.div>
               ))}
             </motion.div>
