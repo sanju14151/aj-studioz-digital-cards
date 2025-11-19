@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { MotionCard, MotionButton, MotionIcon, MotionSection, MotionListItem } from "@/components/motion";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -111,31 +112,39 @@ const Index = () => {
         </div>
       </motion.header>
 
-      {/* Hero Section - Premium Luxury */}
-      <section className="container mx-auto px-6 py-24 md:py-32 lg:py-40">
+      {/* Hero Section - Premium Luxury with Parallax */}
+      <MotionSection className="container mx-auto px-6 py-24 md:py-32 lg:py-40 parallax-bg" staggerChildren={true}>
         <motion.div 
           className="max-w-5xl mx-auto text-center space-y-10"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
         >
-          <motion.div variants={itemVariants}>
-            <div className="inline-block px-5 py-2.5 rounded-full border border-primary/30 bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 mb-6 backdrop-blur-sm">
-              <span className="text-sm text-primary font-semibold tracking-wide">Premium Digital Business Cards</span>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <div className="inline-block px-5 py-2.5 rounded-full border border-primary/30 bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 mb-6 backdrop-blur-sm shadow-gold-glow">
+              <span className="text-sm gold-shine font-semibold tracking-wide">Premium Digital Business Cards</span>
             </div>
           </motion.div>
 
           <motion.h1 
-            variants={itemVariants}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
             className="text-6xl md:text-7xl lg:text-8xl font-bold leading-[1.1] tracking-tight"
           >
             Your Digital Identity,
             <br />
-            <span className="text-gradient-gold inline-block mt-2">Elegantly Crafted</span>
+            <span className="gold-shine inline-block mt-2">Elegantly Crafted</span>
           </motion.h1>
 
           <motion.p 
-            variants={itemVariants}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
             className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed"
           >
             Create stunning NFC-enabled digital business cards that leave a lasting impression. 
@@ -143,29 +152,26 @@ const Index = () => {
           </motion.p>
 
           <motion.div 
-            variants={itemVariants}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
             className="flex flex-col sm:flex-row gap-5 justify-center pt-6"
           >
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button 
-                size="lg" 
-                className="bg-gradient-to-r from-primary via-primary to-primary/80 text-primary-foreground hover:shadow-gold-glow text-lg px-10 py-6 rounded-xl font-semibold"
-                onClick={() => navigate("/builder")}
-              >
-                <Zap className="w-5 h-5 mr-2" />
-                Create Your Card
-              </Button>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button 
-                size="lg" 
-                variant="outline"
-                className="border-2 border-primary/30 hover:bg-primary/5 hover:border-primary/50 text-lg px-10 py-6 rounded-xl font-semibold backdrop-blur-sm"
-              >
-                <QrCode className="w-5 h-5 mr-2" />
-                View Demo
-              </Button>
-            </motion.div>
+            <MotionButton 
+              variant="gold"
+              className="text-lg px-10 py-6"
+              onClick={() => navigate("/builder")}
+            >
+              <Zap className="w-5 h-5 mr-2" />
+              Create Your Card
+            </MotionButton>
+            <MotionButton 
+              variant="outline"
+              className="text-lg px-10 py-6"
+            >
+              <QrCode className="w-5 h-5 mr-2" />
+              View Demo
+            </MotionButton>
           </motion.div>
         </motion.div>
 
@@ -221,7 +227,7 @@ const Index = () => {
             </div>
           </Card>
         </motion.div>
-      </section>
+      </MotionSection>
 
       {/* Social Proof Bar */}
       <motion.section 
