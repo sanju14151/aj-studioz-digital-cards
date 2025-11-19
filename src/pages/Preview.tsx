@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { 
@@ -24,6 +25,20 @@ import { MotionCard, MotionButton, MotionIcon, MotionAvatar, MotionDivider } fro
 
 const Preview = () => {
   const navigate = useNavigate();
+  const [cardData, setCardData] = useState<any>(null);
+
+  useEffect(() => {
+    // Load card data from localStorage
+    const storedData = localStorage.getItem('previewCardData');
+    if (storedData) {
+      try {
+        setCardData(JSON.parse(storedData));
+      } catch (error) {
+        console.error('Error parsing preview data:', error);
+        toast.error('Failed to load preview data');
+      }
+    }
+  }, []);
 
   const handleShare = () => {
     toast.success("Link copied to clipboard!", {
@@ -143,22 +158,25 @@ const Preview = () => {
                     className="space-y-3"
                     variants={itemVariants}
                   >
-                    <h1 className="text-5xl font-bold tracking-tight">John Doe</h1>
-                    <p className="text-2xl text-primary font-semibold">Creative Director</p>
-                    <p className="text-muted-foreground flex items-center justify-center gap-2 text-lg">
-                      <Building className="w-5 h-5" />
-                      AJ STUDIOZ
-                    </p>
+                    <h1 className="text-5xl font-bold tracking-tight">{cardData?.name || 'John Doe'}</h1>
+                    <p className="text-2xl text-primary font-semibold">{cardData?.role || 'Creative Director'}</p>
+                    {cardData?.company && (
+                      <p className="text-muted-foreground flex items-center justify-center gap-2 text-lg">
+                        <Building className="w-5 h-5" />
+                        {cardData.company}
+                      </p>
+                    )}
                   </motion.div>
 
                   {/* Bio */}
-                  <motion.p 
-                    className="text-lg text-muted-foreground max-w-md mx-auto leading-relaxed"
-                    variants={itemVariants}
-                  >
-                    Passionate about design and innovation. Building beautiful digital experiences 
-                    that connect people and ideas.
-                  </motion.p>
+                  {cardData?.bio && (
+                    <motion.p 
+                      className="text-lg text-muted-foreground max-w-md mx-auto leading-relaxed"
+                      variants={itemVariants}
+                    >
+                      {cardData.bio}
+                    </motion.p>
+                  )}
 
                   {/* Location & Website */}
                   <motion.div 

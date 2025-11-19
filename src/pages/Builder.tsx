@@ -77,6 +77,13 @@ const Builder = () => {
       return;
     }
 
+    if (!cardData.name || cardData.name.trim().length < 2) {
+      toast.error("Please enter your name", {
+        description: "Name is required to save your card"
+      });
+      return;
+    }
+
     try {
       const { createCard, updateCard, generateUsername } = await import('@/lib/api-client');
       
@@ -96,16 +103,16 @@ const Builder = () => {
       const cardDataForAPI = {
         username,
         fullName: cardData.name,
-        role: cardData.role,
-        company: cardData.company,
-        bio: cardData.bio,
-        profileImage: cardData.profileImage,
-        coverImage: cardData.coverImage,
-        email: cardData.email,
-        phone: cardData.phone,
-        website: cardData.website,
-        location: cardData.location,
-        industry: cardData.industry,
+        role: cardData.role || '',
+        company: cardData.company || '',
+        bio: cardData.bio || '',
+        profileImage: cardData.profileImage || '',
+        coverImage: cardData.coverImage || '',
+        email: cardData.email || '',
+        phone: cardData.phone || '',
+        website: cardData.website || '',
+        location: cardData.location || '',
+        industry: cardData.industry || '',
       };
 
       await createCard(user.id, cardDataForAPI, socialLinksArray);
@@ -125,7 +132,10 @@ const Builder = () => {
   };
 
   const handlePreview = () => {
-    navigate("/preview");
+    // Store card data in localStorage for preview
+    localStorage.setItem('previewCardData', JSON.stringify(cardData));
+    // Open preview in new tab
+    window.open('/preview', '_blank');
   };
 
   const handleSaveContact = () => {

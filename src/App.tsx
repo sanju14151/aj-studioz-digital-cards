@@ -27,6 +27,14 @@ import Pricing from "./pages/Pricing";
 import Demo from "./pages/Demo";
 import Upgrade from "./pages/Upgrade";
 import Profile from "./pages/Profile";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import Support from "./pages/Support";
+import Blog from "./pages/Blog";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
+import Security from "./pages/Security";
+import Cookies from "./pages/Cookies";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -48,6 +56,14 @@ const App = () => (
             <Route path="/demo" element={<Demo />} />
             <Route path="/nfc-cards" element={<NFCCards />} />
             <Route path="/upgrade" element={<Upgrade />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/support" element={<Support />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/security" element={<Security />} />
+            <Route path="/cookies" element={<Cookies />} />
             
             {/* Protected Routes - Require Authentication */}
             <Route path="/builder" element={<ProtectedRoute><Builder /></ProtectedRoute>} />
