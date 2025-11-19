@@ -487,7 +487,7 @@ const Index = () => {
           <div className="grid md:grid-cols-4 gap-12 mb-12">
             <div className="space-y-6">
               <div className="flex items-center gap-3">
-                <Sparkles className="w-7 h-7 text-primary" />
+                <img src="/AJ.svg" alt="AJ STUDIOZ" className="w-10 h-10" />
                 <span className="text-xl font-bold">
                   <span className="text-gradient-gold">AJ</span>
                   <span className="text-foreground"> STUDIOZ</span>

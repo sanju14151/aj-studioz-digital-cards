@@ -230,7 +230,10 @@ const Features = () => {
               </ul>
             </div>
             <div>
-              <h3 className="font-bold mb-4">AJ STUDIOZ</h3>
+              <div className="flex items-center gap-2 mb-4">
+                <img src="/AJ.svg" alt="AJ STUDIOZ" className="w-10 h-10" />
+                <h3 className="font-bold">AJ STUDIOZ</h3>
+              </div>
               <p className="text-muted-foreground text-sm">
                 Create stunning digital business cards that leave a lasting impression.
               </p>

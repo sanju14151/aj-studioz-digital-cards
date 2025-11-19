@@ -25,6 +25,8 @@ import Integrations from "./pages/Integrations";
 import Features from "./pages/Features";
 import Pricing from "./pages/Pricing";
 import Demo from "./pages/Demo";
+import Upgrade from "./pages/Upgrade";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -45,6 +47,7 @@ const App = () => (
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/demo" element={<Demo />} />
             <Route path="/nfc-cards" element={<NFCCards />} />
+            <Route path="/upgrade" element={<Upgrade />} />
             
             {/* Protected Routes - Require Authentication */}
             <Route path="/builder" element={<ProtectedRoute><Builder /></ProtectedRoute>} />
@@ -58,6 +61,7 @@ const App = () => (
             <Route path="/dashboard/email-signature" element={<ProtectedRoute><EmailSignature /></ProtectedRoute>} />
             <Route path="/dashboard/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
             <Route path="/dashboard/integrations" element={<ProtectedRoute><Integrations /></ProtectedRoute>} />
+            <Route path="/dashboard/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="/dashboard/id-cards" element={<ProtectedRoute><IDCards /></ProtectedRoute>} />
             <Route path="/create/youtube-id-card" element={<ProtectedRoute><YoutubeIDCardCreator /></ProtectedRoute>} />
             <Route path="/settings/custom-domain/:cardId" element={<ProtectedRoute><CustomDomainSettings /></ProtectedRoute>} />

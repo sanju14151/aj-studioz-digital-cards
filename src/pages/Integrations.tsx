@@ -45,9 +45,10 @@ const Integrations = () => {
     {
       name: 'Zapier',
       description: 'Connect with 3000+ apps',
-      icon: '⚡',
+      icon: '/logos/zapier.svg',
       color: 'from-orange-400 to-orange-500',
-      connected: false
+      connected: false,
+      isImage: true
     },
     {
       name: 'Slack',
@@ -97,7 +98,11 @@ const Integrations = () => {
                   <Card className="p-6 bg-gradient-to-br from-card to-secondary/30 border-2 border-border/50 hover:border-primary/50 transition-all h-full flex flex-col">
                     <div className="flex items-start gap-4 mb-4">
                       <div className={`w-16 h-16 rounded-xl bg-gradient-to-br ${integration.color} flex items-center justify-center text-3xl`}>
-                        {integration.icon}
+                        {integration.isImage ? (
+                          <img src={integration.icon} alt={integration.name} className="w-12 h-12" />
+                        ) : (
+                          integration.icon
+                        )}
                       </div>
                       <div className="flex-1">
                         <h3 className="font-bold text-lg mb-1">{integration.name}</h3>

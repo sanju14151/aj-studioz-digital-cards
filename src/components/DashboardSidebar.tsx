@@ -94,7 +94,7 @@ export const DashboardSidebar = () => {
     <motion.aside
       initial={{ x: -20, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
-      className="w-56 h-screen bg-gradient-to-b from-emerald-600 to-teal-700 flex flex-col sticky top-0 text-white"
+      className="w-56 h-screen bg-gradient-to-br from-indigo-600 via-blue-600 to-cyan-500 flex flex-col sticky top-0 text-white shadow-2xl"
     >
       {/* Logo */}
       <div className="p-5 flex items-center justify-center border-b border-white/10">

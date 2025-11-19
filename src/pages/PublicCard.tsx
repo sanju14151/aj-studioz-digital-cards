@@ -219,11 +219,11 @@ const PublicCard = () => {
   const primaryColor = cardData.primaryColor || '#D4AF37';
 
   const socialIcons = [
-    { icon: Instagram, link: cardData.socialLinks?.instagram, label: 'Instagram', color: '#E4405F' },
-    { icon: Linkedin, link: cardData.socialLinks?.linkedin, label: 'LinkedIn', color: '#0A66C2' },
-    { icon: Twitter, link: cardData.socialLinks?.twitter, label: 'Twitter', color: '#1DA1F2' },
-    { icon: Facebook, link: cardData.socialLinks?.facebook, label: 'Facebook', color: '#1877F2' },
-    { icon: Youtube, link: cardData.socialLinks?.youtube, label: 'YouTube', color: '#FF0000' },
+    { icon: '/logos/instagram.svg', link: cardData.socialLinks?.instagram, label: 'Instagram', color: '#E4405F', isImage: true },
+    { icon: '/logos/linkedin.svg', link: cardData.socialLinks?.linkedin, label: 'LinkedIn', color: '#0A66C2', isImage: true },
+    { icon: '/logos/twitter.svg', link: cardData.socialLinks?.twitter, label: 'Twitter', color: '#1DA1F2', isImage: true },
+    { icon: '/logos/facebook.svg', link: cardData.socialLinks?.facebook, label: 'Facebook', color: '#1877F2', isImage: true },
+    { icon: Youtube, link: cardData.socialLinks?.youtube, label: 'YouTube', color: '#FF0000', isImage: false },
   ].filter(social => social.link);
 
   return (
@@ -239,6 +239,13 @@ const PublicCard = () => {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
         </div>
       )}
+
+      {/* AJ STUDIOZ Watermark */}
+      <div className="fixed bottom-4 right-4 z-50 opacity-30 hover:opacity-70 transition-opacity">
+        <div className="text-2xl font-bold text-gradient-gold tracking-wider" style={{ fontFamily: 'system-ui' }}>
+          AJ STUDIOZ
+        </div>
+      </div>
 
       {/* Card Content */}
       <div className={`max-w-2xl mx-auto px-6 ${cardData.coverImageUrl ? '-mt-24 relative' : 'pt-16'} pb-16`}>
@@ -420,7 +427,7 @@ const PublicCard = () => {
               Connect with me
             </h3>
             <div className="flex justify-center gap-4">
-              {socialIcons.map(({ icon: Icon, link, label, color }) => (
+              {socialIcons.map(({ icon, link, label, color, isImage }) => (
                 <motion.a
                   key={label}
                   href={link}
@@ -430,12 +437,16 @@ const PublicCard = () => {
                   whileTap={{ scale: 0.95 }}
                   className="w-14 h-14 rounded-2xl flex items-center justify-center transition-all shadow-lg"
                   style={{
-                    backgroundColor: `${primaryColor}15`,
-                    border: `2px solid ${primaryColor}30`
+                    backgroundColor: isImage ? 'transparent' : `${primaryColor}15`,
+                    border: isImage ? 'none' : `2px solid ${primaryColor}30`
                   }}
                   title={label}
                 >
-                  <Icon className="w-6 h-6" style={{ color: primaryColor }} />
+                  {isImage ? (
+                    <img src={icon as string} alt={label} className="w-10 h-10" />
+                  ) : (
+                    React.createElement(icon as any, { className: "w-6 h-6", style: { color: primaryColor } })
+                  )}
                 </motion.a>
               ))}
             </div>
