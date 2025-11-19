@@ -29,11 +29,11 @@ export default async function handler(req, res) {
     try {
       // Get card data with proper column names
       const cardResult = await client.query(
-        `SELECT id, user_id, username, name, full_name, role, company, bio, 
+        `SELECT id, user_id, username, full_name, role, company, bio, 
                 email, phone, website, location, 
                 profile_image_url as profile_image, 
                 cover_image_url as cover_image,
-                theme_id, is_active, is_published, created_at, updated_at
+                theme_id, is_active, created_at, updated_at
          FROM digital_cards
          WHERE username = $1 AND is_active = true`,
         [username]
@@ -53,15 +53,19 @@ export default async function handler(req, res) {
         [card.id]
       );
 
-      // Track view
-      const userAgent = req.headers['user-agent'] || '';
-      const visitorIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-      
-      await client.query(
-        `INSERT INTO card_views (card_id, visitor_ip, user_agent)
-         VALUES ($1, $2, $3)`,
-        [card.id, visitorIp, userAgent]
-      );
+      // Track view (with error handling)
+      try {
+        const userAgent = req.headers['user-agent'] || '';
+        const visitorIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+        
+        await client.query(
+          `INSERT INTO card_views (card_id, viewer_ip, viewer_device)
+           VALUES ($1, $2, $3)`,
+          [card.id, visitorIp, userAgent]
+        );
+      } catch (viewError) {
+        console.warn('Failed to track view:', viewError.message);
+      }
 
       res.status(200).json({
         card: card,

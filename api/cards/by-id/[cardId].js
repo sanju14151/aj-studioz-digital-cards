@@ -29,11 +29,11 @@ export default async function handler(req, res) {
     try {
       // Get card data with proper column aliases
       const cardResult = await client.query(
-        `SELECT id, user_id, username, name, full_name, role, company, bio, 
+        `SELECT id, user_id, username, full_name, role, company, bio, 
                 email, phone, website, location, 
                 profile_image_url as profile_image, 
                 cover_image_url as cover_image,
-                theme_id, is_active, is_published, created_at, updated_at
+                theme_id, is_active, created_at, updated_at
          FROM digital_cards
          WHERE id = $1`,
         [cardId]
