@@ -36,10 +36,10 @@ export default async function handler(req, res) {
         const cardResult = await client.query(
           `INSERT INTO digital_cards (
             user_id, username, full_name, role, company, bio,
-            profile_image, cover_image, email, phone, website, location,
-            theme_id, is_active, industry
+            profile_image_url, cover_image_url, email, phone, website, location,
+            theme_id, is_active
           )
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
            RETURNING *`,
           [
             userId,
@@ -55,8 +55,7 @@ export default async function handler(req, res) {
             cardData.website || null,
             cardData.location || null,
             cardData.themeId || null,
-            true,
-            cardData.industry || null
+            true
           ]
         );
         card = cardResult.rows[0];
@@ -82,9 +81,9 @@ export default async function handler(req, res) {
         const cardResult = await client.query(
           `UPDATE digital_cards
            SET full_name = $1, role = $2, company = $3, bio = $4,
-               profile_image = $5, cover_image = $6, email = $7, phone = $8,
-               website = $9, location = $10, theme_id = $11, industry = $12, updated_at = CURRENT_TIMESTAMP
-           WHERE id = $13
+               profile_image_url = $5, cover_image_url = $6, email = $7, phone = $8,
+               website = $9, location = $10, theme_id = $11, updated_at = CURRENT_TIMESTAMP
+           WHERE id = $12
            RETURNING *`,
           [
             cardData.fullName,
@@ -98,7 +97,6 @@ export default async function handler(req, res) {
             cardData.website || null,
             cardData.location || null,
             cardData.themeId || null,
-            cardData.industry || null,
             cardId
           ]
         );

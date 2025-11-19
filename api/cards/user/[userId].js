@@ -31,7 +31,8 @@ export default async function handler(req, res) {
       const cardsResult = await client.query(
         `SELECT 
           id, user_id, username, full_name, role, company, bio,
-          profile_image, cover_image, email, phone, website, location,
+          profile_image_url as profile_image, cover_image_url as cover_image, 
+          email, phone, website, location,
           theme_id, is_active, created_at, updated_at
          FROM digital_cards
          WHERE user_id = $1
