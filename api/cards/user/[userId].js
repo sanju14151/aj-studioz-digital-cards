@@ -42,42 +42,53 @@ export default async function handler(req, res) {
 
       const cards = cardsResult.rows;
 
-      // Get analytics for each card
+      // Get analytics for each card (with error handling for missing tables)
       const cardsWithStats = await Promise.all(
         cards.map(async (card) => {
-          // Get views count
-          const viewsResult = await client.query(
-            `SELECT COUNT(*) as total_views,
-                    COUNT(DISTINCT visitor_ip) as unique_visitors
-             FROM card_views
-             WHERE card_id = $1`,
-            [card.id]
-          );
+          let stats = {
+            views: 0,
+            uniqueVisitors: 0,
+            clicks: 0,
+            saves: 0,
+          };
 
-          // Get clicks count (all click types)
-          const clicksResult = await client.query(
-            `SELECT COUNT(*) as total_clicks
-             FROM card_clicks
-             WHERE card_id = $1`,
-            [card.id]
-          );
+          try {
+            // Try to get views count
+            const viewsResult = await client.query(
+              `SELECT COUNT(*) as total_views,
+                      COUNT(DISTINCT visitor_ip) as unique_visitors
+               FROM card_views
+               WHERE card_id = $1`,
+              [card.id]
+            );
+            stats.views = parseInt(viewsResult.rows[0].total_views) || 0;
+            stats.uniqueVisitors = parseInt(viewsResult.rows[0].unique_visitors) || 0;
 
-          // Get saves count (contact downloads)
-          const savesResult = await client.query(
-            `SELECT COUNT(*) as total_saves
-             FROM card_clicks
-             WHERE card_id = $1 AND click_type = 'save_contact'`,
-            [card.id]
-          );
+            // Try to get clicks count
+            const clicksResult = await client.query(
+              `SELECT COUNT(*) as total_clicks
+               FROM card_clicks
+               WHERE card_id = $1`,
+              [card.id]
+            );
+            stats.clicks = parseInt(clicksResult.rows[0].total_clicks) || 0;
+
+            // Try to get saves count
+            const savesResult = await client.query(
+              `SELECT COUNT(*) as total_saves
+               FROM card_clicks
+               WHERE card_id = $1 AND click_type = 'save_contact'`,
+              [card.id]
+            );
+            stats.saves = parseInt(savesResult.rows[0].total_saves) || 0;
+          } catch (analyticsError) {
+            // If analytics tables don't exist, just use default values
+            console.warn('Analytics tables not found, using default values');
+          }
 
           return {
             ...card,
-            stats: {
-              views: parseInt(viewsResult.rows[0].total_views) || 0,
-              uniqueVisitors: parseInt(viewsResult.rows[0].unique_visitors) || 0,
-              clicks: parseInt(clicksResult.rows[0].total_clicks) || 0,
-              saves: parseInt(savesResult.rows[0].total_saves) || 0,
-            }
+            stats
           };
         })
       );
