@@ -120,8 +120,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       localStorage.setItem('user', JSON.stringify(authenticatedUser));
       localStorage.setItem('authToken', `token_${userProfile.id}_${Date.now()}`);
       
-      // Auto-create card skeleton if user doesn't have one
-      await createUserCardSkeleton(userProfile.id, userProfile.full_name, userProfile.email);
+      // Don't create card on login - only on signup
       
     } catch (error) {
       console.error('Login error:', error);

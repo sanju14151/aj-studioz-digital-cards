@@ -14,6 +14,14 @@ import IDCards from "./pages/IDCards";
 import YoutubeIDCardCreator from "./pages/YoutubeIDCardCreator";
 import CustomDomainSettings from "./pages/CustomDomainSettings";
 import Templates from "./pages/Templates";
+import NFCCards from "./pages/NFCCards";
+import QRCodesPage from "./pages/QRCodesPage";
+import Contacts from "./pages/Contacts";
+import MyLeads from "./pages/MyLeads";
+import VirtualBackground from "./pages/VirtualBackground";
+import EmailSignature from "./pages/EmailSignature";
+import Analytics from "./pages/Analytics";
+import Integrations from "./pages/Integrations";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -35,6 +43,14 @@ const App = () => (
             <Route path="/builder" element={<ProtectedRoute><Builder /></ProtectedRoute>} />
             <Route path="/templates" element={<ProtectedRoute><Templates /></ProtectedRoute>} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/dashboard/nfc-cards" element={<ProtectedRoute><NFCCards /></ProtectedRoute>} />
+            <Route path="/dashboard/qr-codes" element={<ProtectedRoute><QRCodesPage /></ProtectedRoute>} />
+            <Route path="/dashboard/contacts" element={<ProtectedRoute><Contacts /></ProtectedRoute>} />
+            <Route path="/dashboard/leads" element={<ProtectedRoute><MyLeads /></ProtectedRoute>} />
+            <Route path="/dashboard/virtual-background" element={<ProtectedRoute><VirtualBackground /></ProtectedRoute>} />
+            <Route path="/dashboard/email-signature" element={<ProtectedRoute><EmailSignature /></ProtectedRoute>} />
+            <Route path="/dashboard/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
+            <Route path="/dashboard/integrations" element={<ProtectedRoute><Integrations /></ProtectedRoute>} />
             <Route path="/dashboard/id-cards" element={<ProtectedRoute><IDCards /></ProtectedRoute>} />
             <Route path="/create/youtube-id-card" element={<ProtectedRoute><YoutubeIDCardCreator /></ProtectedRoute>} />
             <Route path="/settings/custom-domain/:cardId" element={<ProtectedRoute><CustomDomainSettings /></ProtectedRoute>} />
