@@ -179,49 +179,42 @@ const Dashboard = () => {
     };
 
     try {
+      // Generate more compact QR with less margin
       await QRCode.toCanvas(qrCanvasRef.current, url, {
-        width: 400,
-        margin: 2,
+        width: 350,
+        margin: 1,
         color: colors[style],
         errorCorrectionLevel: 'H',
       });
 
-      // Add logo and text in center
+      // Add logo perfectly centered
       const canvas = qrCanvasRef.current;
       const ctx = canvas.getContext('2d');
       if (ctx) {
-            // Create white circle background for logo
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-            const logoSize = 80;
-            
-            ctx.fillStyle = '#FFFFFF';
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, logoSize / 2 + 10, 0, 2 * Math.PI);
-            ctx.fill();
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const logoSize = 70;
+        const bgSize = logoSize + 16;
+        
+        // Create white rounded square background
+        ctx.fillStyle = '#FFFFFF';
+        ctx.beginPath();
+        ctx.roundRect(centerX - bgSize / 2, centerY - bgSize / 2, bgSize, bgSize, 8);
+        ctx.fill();
 
-            // Load and draw logo
-            const logo = new Image();
-            logo.crossOrigin = 'anonymous';
-            logo.onload = () => {
-              ctx.drawImage(logo, centerX - logoSize / 2, centerY - logoSize / 2 - 15, logoSize, logoSize);
-              
-        // Add "AJ" text below logo
-        ctx.fillStyle = '#000000';
-        ctx.font = 'bold 24px Arial';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('AJ', centerX, centerY + 35);
-      };
-      logo.src = '/AJ.svg';
-    }
+        // Load and draw logo centered
+        const logo = new Image();
+        logo.crossOrigin = 'anonymous';
+        logo.onload = () => {
+          ctx.drawImage(logo, centerX - logoSize / 2, centerY - logoSize / 2, logoSize, logoSize);
+        };
+        logo.src = '/AJ.svg';
+      }
     } catch (error) {
       console.error('Error generating QR code:', error);
       toast.error('Failed to generate QR code');
     }
-  };
-
-  const handleShowQRCode = async (card: UserCard) => {
+  };  const handleShowQRCode = async (card: UserCard) => {
     setSelectedCardForQR(card);
     setQrModalOpen(true);
     setTimeout(() => generateQRCode(qrStyle), 100);
