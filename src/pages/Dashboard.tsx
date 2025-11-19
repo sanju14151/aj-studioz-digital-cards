@@ -26,6 +26,9 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+import { DashboardSidebar } from '@/components/DashboardSidebar';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { AlertCircle } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -55,6 +58,7 @@ const Dashboard = () => {
   const { user } = useAuth();
   const [cards, setCards] = useState<UserCard[]>([]);
   const [loading, setLoading] = useState(true);
+  const [hasIncompleteCard, setHasIncompleteCard] = useState(false);
 
   useEffect(() => {
     loadUserCards();
@@ -77,7 +81,14 @@ const Dashboard = () => {
       }
 
       const data = await response.json();
-      setCards(data.cards || []);
+      const userCards = data.cards || [];
+      setCards(userCards);
+      
+      // Check if user has incomplete card (missing profile image, role, or bio)
+      const incomplete = userCards.some((card: UserCard) => 
+        !card.profile_image || !card.role || card.role.length < 3
+      );
+      setHasIncompleteCard(incomplete && userCards.length > 0);
     } catch (error) {
       console.error('Error loading cards:', error);
       toast.error('Failed to load cards');
@@ -153,9 +164,14 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border/50 backdrop-blur-xl sticky top-0 z-50 bg-background/80">
+    <div className="flex min-h-screen bg-background">
+      {/* Sidebar */}
+      <DashboardSidebar />
+      
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col">
+        {/* Header */}
+        <header className="border-b border-border/50 backdrop-blur-xl sticky top-0 z-40 bg-background/80">
         <div className="container mx-auto px-6 py-5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <h1 className="text-2xl font-bold">
@@ -180,8 +196,32 @@ const Dashboard = () => {
         </div>
       </header>
 
-      <div className="container mx-auto px-6 py-10">
-        {cards.length === 0 ? (
+        <div className="container mx-auto px-6 py-10">
+          {/* Incomplete Card Alert */}
+          {hasIncompleteCard && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6"
+            >
+              <Alert className="border-amber-500/50 bg-amber-500/10">
+                <AlertCircle className="h-5 w-5 text-amber-500" />
+                <AlertTitle className="text-amber-500">Complete Your First Card</AlertTitle>
+                <AlertDescription className="text-muted-foreground">
+                  Your card is incomplete! Add a profile picture, role, and bio to make it shine.
+                  <Button 
+                    variant="link" 
+                    className="text-amber-500 pl-1 h-auto p-0"
+                    onClick={() => cards.length > 0 && handleEditCard(cards[0].id)}
+                  >
+                    Complete now →
+                  </Button>
+                </AlertDescription>
+              </Alert>
+            </motion.div>
+          )}
+
+          {cards.length === 0 ? (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -351,6 +391,7 @@ const Dashboard = () => {
             ))}
           </div>
         )}
+        </div>
       </div>
     </div>
   );

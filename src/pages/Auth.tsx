@@ -28,7 +28,7 @@ const Auth = () => {
       toast.success("Welcome back!", {
         description: "You've successfully logged in"
       });
-      navigate("/builder");
+      navigate("/dashboard");
     } catch (error: any) {
       toast.error("Login failed", {
         description: error.message || "Please check your credentials"
@@ -51,7 +51,7 @@ const Auth = () => {
       toast.success("Account created successfully!", {
         description: "Welcome to AJ STUDIOZ"
       });
-      navigate("/builder");
+      navigate("/dashboard");
     } catch (error: any) {
       toast.error("Signup failed", {
         description: error.message || "Please try again"

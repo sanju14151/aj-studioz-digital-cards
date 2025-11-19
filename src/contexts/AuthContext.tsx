@@ -37,6 +37,46 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
+// Helper function to create card skeleton for new/existing users
+const createUserCardSkeleton = async (userId: string, fullName: string, email: string) => {
+  try {
+    // Check if user already has a card
+    const checkResponse = await fetch(`/api/cards/user/${userId}`);
+    if (checkResponse.ok) {
+      const data = await checkResponse.json();
+      if (data.cards && data.cards.length > 0) {
+        // User already has cards, skip creation
+        return;
+      }
+    }
+    
+    // Create skeleton card with basic info
+    const { createCard, generateUsername } = await import('@/lib/api-client');
+    const username = await generateUsername(fullName);
+    
+    const skeletonCard = {
+      username,
+      fullName,
+      role: '', // Incomplete - needs to be filled
+      company: '',
+      bio: '',
+      profileImage: '',
+      coverImage: '',
+      email,
+      phone: '',
+      website: '',
+      location: '',
+      industry: 'Technology',
+    };
+    
+    await createCard(userId, skeletonCard, []);
+    console.log('Card skeleton created for user:', userId);
+  } catch (error) {
+    console.error('Error creating card skeleton:', error);
+    // Don't throw - just log, as this is non-critical
+  }
+};
+
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -79,6 +119,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setUser(authenticatedUser);
       localStorage.setItem('user', JSON.stringify(authenticatedUser));
       localStorage.setItem('authToken', `token_${userProfile.id}_${Date.now()}`);
+      
+      // Auto-create card skeleton if user doesn't have one
+      await createUserCardSkeleton(userProfile.id, userProfile.full_name, userProfile.email);
       
     } catch (error) {
       console.error('Login error:', error);
@@ -123,6 +166,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setUser(newUser);
       localStorage.setItem('user', JSON.stringify(newUser));
       localStorage.setItem('authToken', `token_${newUser.id}_${Date.now()}`);
+      
+      // Auto-create card skeleton for new user
+      await createUserCardSkeleton(newUser.id, newUser.fullName, newUser.email);
       
     } catch (error) {
       console.error('Signup error:', error);
