@@ -1,4 +1,4 @@
-DATABASE_URL/**
+/**
  * Image Upload with Vercel Blob Storage
  * Replaces base64 with real cloud storage
  */
