@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -9,35 +9,56 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { MotionCard, MotionButton } from "@/components/motion";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Auth = () => {
   const navigate = useNavigate();
+  const { login, signup } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  
+  const [loginData, setLoginData] = useState({ email: '', password: '' });
+  const [signupData, setSignupData] = useState({ name: '', email: '', password: '' });
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      await login(loginData.email, loginData.password);
       toast.success("Welcome back!", {
         description: "You've successfully logged in"
       });
       navigate("/builder");
-    }, 1000);
+    } catch (error: any) {
+      toast.error("Login failed", {
+        description: error.message || "Please check your credentials"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleSignup = async (e: React.FormEvent) => {
+  const handleSignup = async (e: FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      if (signupData.password.length < 6) {
+        throw new Error("Password must be at least 6 characters long");
+      }
+      
+      await signup(signupData.email, signupData.password, signupData.name);
       toast.success("Account created successfully!", {
         description: "Welcome to AJ STUDIOZ"
       });
       navigate("/builder");
-    }, 1000);
+    } catch (error: any) {
+      toast.error("Signup failed", {
+        description: error.message || "Please try again"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -153,6 +174,8 @@ const Auth = () => {
                         type="email"
                         placeholder="you@example.com"
                         required
+                        value={loginData.email}
+                        onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
                         className="h-12 pl-12 bg-background/50 border-border/50 focus:border-primary rounded-xl"
                       />
                     </div>
@@ -168,6 +191,8 @@ const Auth = () => {
                         id="login-password"
                         type="password"
                         required
+                        value={loginData.password}
+                        onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
                         className="h-12 pl-12 bg-background/50 border-border/50 focus:border-primary rounded-xl"
                         placeholder="••••••••"
                       />
@@ -211,6 +236,8 @@ const Auth = () => {
                         type="text"
                         placeholder="John Doe"
                         required
+                        value={signupData.name}
+                        onChange={(e) => setSignupData({ ...signupData, name: e.target.value })}
                         className="h-12 pl-12 bg-background/50 border-border/50 focus:border-primary rounded-xl"
                       />
                     </div>
@@ -227,6 +254,8 @@ const Auth = () => {
                         type="email"
                         placeholder="you@example.com"
                         required
+                        value={signupData.email}
+                        onChange={(e) => setSignupData({ ...signupData, email: e.target.value })}
                         className="h-12 pl-12 bg-background/50 border-border/50 focus:border-primary rounded-xl"
                       />
                     </div>
@@ -242,10 +271,16 @@ const Auth = () => {
                         id="signup-password"
                         type="password"
                         required
+                        minLength={6}
+                        value={signupData.password}
+                        onChange={(e) => setSignupData({ ...signupData, password: e.target.value })}
                         className="h-12 pl-12 bg-background/50 border-border/50 focus:border-primary rounded-xl"
                         placeholder="••••••••"
                       />
                     </div>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Minimum 6 characters required
+                    </p>
                   </div>
 
                   <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>

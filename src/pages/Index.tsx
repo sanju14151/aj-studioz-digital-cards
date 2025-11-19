@@ -168,6 +168,7 @@ const Index = () => {
             <MotionButton 
               variant="outline"
               className="text-lg px-10 py-6"
+              onClick={() => navigate("/preview")}
             >
               <QrCode className="w-5 h-5 mr-2" />
               View Demo
