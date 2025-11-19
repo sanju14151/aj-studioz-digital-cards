@@ -143,7 +143,7 @@ const Dashboard = () => {
 
     try {
       setIsDeleting(true);
-      const response = await fetch(`/api/cards/${cardToDelete.id}`, {
+      const response = await fetch(`/api/cards/delete/${cardToDelete.id}`, {
         method: 'DELETE',
       });
 
