@@ -14,7 +14,246 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      card_clicks: {
+        Row: {
+          card_id: string
+          click_type: string
+          clicked_at: string | null
+          id: string
+        }
+        Insert: {
+          card_id: string
+          click_type: string
+          clicked_at?: string | null
+          id?: string
+        }
+        Update: {
+          card_id?: string
+          click_type?: string
+          clicked_at?: string | null
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "card_clicks_card_id_fkey"
+            columns: ["card_id"]
+            isOneToOne: false
+            referencedRelation: "digital_cards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      card_themes: {
+        Row: {
+          background_color: string | null
+          created_at: string | null
+          font_family: string | null
+          id: string
+          layout_style: string | null
+          name: string
+          primary_color: string | null
+          secondary_color: string | null
+        }
+        Insert: {
+          background_color?: string | null
+          created_at?: string | null
+          font_family?: string | null
+          id?: string
+          layout_style?: string | null
+          name: string
+          primary_color?: string | null
+          secondary_color?: string | null
+        }
+        Update: {
+          background_color?: string | null
+          created_at?: string | null
+          font_family?: string | null
+          id?: string
+          layout_style?: string | null
+          name?: string
+          primary_color?: string | null
+          secondary_color?: string | null
+        }
+        Relationships: []
+      }
+      card_views: {
+        Row: {
+          card_id: string
+          id: string
+          viewed_at: string | null
+          viewer_country: string | null
+          viewer_device: string | null
+          viewer_ip: string | null
+        }
+        Insert: {
+          card_id: string
+          id?: string
+          viewed_at?: string | null
+          viewer_country?: string | null
+          viewer_device?: string | null
+          viewer_ip?: string | null
+        }
+        Update: {
+          card_id?: string
+          id?: string
+          viewed_at?: string | null
+          viewer_country?: string | null
+          viewer_device?: string | null
+          viewer_ip?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "card_views_card_id_fkey"
+            columns: ["card_id"]
+            isOneToOne: false
+            referencedRelation: "digital_cards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      digital_cards: {
+        Row: {
+          bio: string | null
+          company: string | null
+          cover_image_url: string | null
+          created_at: string | null
+          email: string | null
+          full_name: string
+          id: string
+          is_active: boolean | null
+          location: string | null
+          phone: string | null
+          profile_image_url: string | null
+          qr_code_url: string | null
+          role: string | null
+          theme_id: string | null
+          updated_at: string | null
+          user_id: string
+          username: string
+          view_count: number | null
+          website: string | null
+        }
+        Insert: {
+          bio?: string | null
+          company?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          email?: string | null
+          full_name: string
+          id?: string
+          is_active?: boolean | null
+          location?: string | null
+          phone?: string | null
+          profile_image_url?: string | null
+          qr_code_url?: string | null
+          role?: string | null
+          theme_id?: string | null
+          updated_at?: string | null
+          user_id: string
+          username: string
+          view_count?: number | null
+          website?: string | null
+        }
+        Update: {
+          bio?: string | null
+          company?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          email?: string | null
+          full_name?: string
+          id?: string
+          is_active?: boolean | null
+          location?: string | null
+          phone?: string | null
+          profile_image_url?: string | null
+          qr_code_url?: string | null
+          role?: string | null
+          theme_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+          username?: string
+          view_count?: number | null
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "digital_cards_theme_id_fkey"
+            columns: ["theme_id"]
+            isOneToOne: false
+            referencedRelation: "card_themes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "digital_cards_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          full_name: string | null
+          id: string
+          updated_at: string | null
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          full_name?: string | null
+          id: string
+          updated_at?: string | null
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string | null
+          username?: string | null
+        }
+        Relationships: []
+      }
+      social_links: {
+        Row: {
+          card_id: string
+          created_at: string | null
+          display_order: number | null
+          id: string
+          platform: string
+          url: string
+        }
+        Insert: {
+          card_id: string
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          platform: string
+          url: string
+        }
+        Update: {
+          card_id?: string
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          platform?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "social_links_card_id_fkey"
+            columns: ["card_id"]
+            isOneToOne: false
+            referencedRelation: "digital_cards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
