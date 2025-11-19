@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -43,6 +43,8 @@ const Builder = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [showIndustryModal, setShowIndustryModal] = useState(false);
+  const [isLoadingCard, setIsLoadingCard] = useState(false);
+  const [editingCardId, setEditingCardId] = useState<string | null>(null);
   const [cardData, setCardData] = useState({
     name: "John Doe",
     role: "Creative Director",
@@ -69,6 +71,74 @@ const Builder = () => {
       colors: ["#D4AF37", "#000000"]
     },
   });
+
+  // Load existing card data if editing
+  useEffect(() => {
+    const loadCardData = async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const cardId = urlParams.get('cardId');
+      
+      if (!cardId) return;
+
+      try {
+        setIsLoadingCard(true);
+        setEditingCardId(cardId);
+        
+        const response = await fetch(`/api/cards/by-id/${cardId}`);
+        if (!response.ok) throw new Error('Failed to load card');
+        
+        const data = await response.json();
+        const card = data.card;
+        const socialLinks = data.socialLinks || [];
+
+        // Map API data to component state
+        const socialLinksMap: any = {};
+        socialLinks.forEach((link: any) => {
+          const platform = link.platform.toLowerCase();
+          if (['instagram', 'linkedin', 'twitter', 'facebook', 'youtube'].includes(platform)) {
+            socialLinksMap[platform] = link.url;
+          }
+        });
+
+        setCardData({
+          name: card.full_name || '',
+          role: card.role || '',
+          bio: card.bio || '',
+          company: card.company || '',
+          industry: card.industry || '',
+          email: card.email || '',
+          phone: card.phone || '',
+          location: card.location || '',
+          website: card.website || '',
+          coverImage: card.cover_image || '',
+          profileImage: card.profile_image || '',
+          socialLinks: {
+            instagram: socialLinksMap.instagram || '',
+            linkedin: socialLinksMap.linkedin || '',
+            twitter: socialLinksMap.twitter || '',
+            facebook: socialLinksMap.facebook || '',
+            youtube: socialLinksMap.youtube || '',
+          },
+          youtubeChannel: '',
+          qrCode: '',
+          theme: cardData.theme, // Keep default theme
+        });
+
+        toast.success('Card loaded', {
+          description: 'Editing existing card'
+        });
+      } catch (error) {
+        console.error('Error loading card:', error);
+        toast.error('Failed to load card', {
+          description: 'Starting with new card instead'
+        });
+      } finally {
+        setIsLoadingCard(false);
+      }
+    };
+
+    loadCardData();
+  }, []);
 
   const handleSave = async () => {
     if (!user) {
@@ -115,7 +185,13 @@ const Builder = () => {
         industry: cardData.industry || '',
       };
 
-      await createCard(user.id, cardDataForAPI, socialLinksArray);
+      if (editingCardId) {
+        // Update existing card
+        await updateCard(editingCardId, cardDataForAPI, socialLinksArray);
+      } else {
+        // Create new card
+        await createCard(user.id, cardDataForAPI, socialLinksArray);
+      }
       
       toast.success("Card saved successfully!", {
         description: "Your card has been published"

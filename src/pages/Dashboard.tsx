@@ -71,6 +71,9 @@ const Dashboard = () => {
   const [qrModalOpen, setQrModalOpen] = useState(false);
   const [selectedCardForQR, setSelectedCardForQR] = useState<UserCard | null>(null);
   const qrCanvasRef = useRef<HTMLCanvasElement>(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [cardToDelete, setCardToDelete] = useState<UserCard | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     loadUserCards();
@@ -130,28 +133,37 @@ const Dashboard = () => {
     }
   };
 
-  const handleDeleteCard = async (cardId: string) => {
-    if (!confirm('Are you sure you want to delete this card?')) {
-      return;
-    }
+  const handleDeleteCard = (card: UserCard) => {
+    setCardToDelete(card);
+    setDeleteModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!cardToDelete) return;
 
     try {
-      const response = await fetch(`/api/cards/${cardId}`, {
+      setIsDeleting(true);
+      const response = await fetch(`/api/cards/${cardToDelete.id}`, {
         method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-        }
       });
 
       if (!response.ok) {
         throw new Error('Failed to delete card');
       }
 
-      toast.success('Card deleted successfully');
+      toast.success('Card deleted successfully', {
+        description: `${cardToDelete.full_name}'s card has been removed`
+      });
+      setDeleteModalOpen(false);
+      setCardToDelete(null);
       loadUserCards();
     } catch (error) {
       console.error('Error deleting card:', error);
-      toast.error('Failed to delete card');
+      toast.error('Failed to delete card', {
+        description: 'Please try again later'
+      });
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -429,7 +441,7 @@ const Dashboard = () => {
                           Custom Domain
                         </DropdownMenuItem>
                         <DropdownMenuItem 
-                          onClick={() => handleDeleteCard(card.id)}
+                          onClick={() => handleDeleteCard(card)}
                           className="text-red-500"
                         >
                           <Trash2 className="w-4 h-4 mr-2" />
@@ -500,6 +512,86 @@ const Dashboard = () => {
               </p>
             </div>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Modal */}
+      <Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-red-500">
+              <AlertCircle className="w-5 h-5" />
+              Delete Card?
+            </DialogTitle>
+            <DialogDescription>
+              This action cannot be undone. This will permanently delete the card and all associated data.
+            </DialogDescription>
+          </DialogHeader>
+          
+          {cardToDelete && (
+            <div className="py-4">
+              {/* Card Preview */}
+              <div className="flex items-center gap-4 p-4 bg-secondary/50 rounded-xl mb-4">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center flex-shrink-0">
+                  {cardToDelete.profile_image ? (
+                    <img 
+                      src={cardToDelete.profile_image} 
+                      alt={cardToDelete.full_name}
+                      className="w-full h-full rounded-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-lg font-bold text-primary-foreground">
+                      {cardToDelete.full_name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                    </span>
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-semibold truncate">{cardToDelete.full_name}</h4>
+                  {cardToDelete.role && (
+                    <p className="text-sm text-muted-foreground truncate">{cardToDelete.role}</p>
+                  )}
+                  <p className="text-xs text-muted-foreground">@{cardToDelete.username}</p>
+                </div>
+              </div>
+
+              {/* Warning */}
+              <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 mb-4">
+                <p className="text-sm text-red-600 dark:text-red-400">
+                  <strong>Warning:</strong> You will lose all analytics data, social links, and card views associated with this card.
+                </p>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-3">
+                <Button 
+                  onClick={() => setDeleteModalOpen(false)} 
+                  variant="outline"
+                  className="flex-1"
+                  disabled={isDeleting}
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  onClick={confirmDelete}
+                  variant="destructive"
+                  className="flex-1"
+                  disabled={isDeleting}
+                >
+                  {isDeleting ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                      Deleting...
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Delete Card
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>
